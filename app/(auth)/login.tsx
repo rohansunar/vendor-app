@@ -2,7 +2,7 @@ import { useRequestOtp } from '@/features/auth/hooks/useRequestOtp';
 import { isValidPhone } from '@/shared/utils/phoneValidator';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Animated, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 /**
  * LoginScreen component for user authentication via phone number.
@@ -10,6 +10,7 @@ import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
  */
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
+  const [scaleAnim] = useState(new Animated.Value(1));
   const { mutate, isPending } = useRequestOtp();
 
   /**
@@ -31,15 +32,15 @@ export default function LoginScreen() {
         });
       },
       onError: (error) => {
-        console.error('OTP request failed:', error);
+        // console.log(error)
         Alert.alert('Error', 'Failed to send OTP. Please check your connection and try again.');
       },
     });
   }
 
   return (
-    <View>
-      <Text>Enter Phone Number</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Enter Phone Number</Text>
 
       <TextInput
         placeholder="+919876543210"
@@ -47,26 +48,64 @@ export default function LoginScreen() {
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
+        autoCapitalize="none"
         autoFocus={true}
         accessibilityLabel="Phone number input field"
         onSubmitEditing={handleRequestOtp}
       />
 
-      <Button
-        title={isPending ? 'Sending OTP...' : 'Send OTP'}
-        onPress={handleRequestOtp}
-        disabled={isPending}
-        accessibilityLabel="Send OTP button"
-      />
+      <Animated.View style={[styles.buttonContainer, { transform: [{ scale: scaleAnim }] }]}>
+        <Pressable
+          onPress={handleRequestOtp}
+          onPressIn={() => Animated.spring(scaleAnim, { toValue: 0.95, useNativeDriver: true }).start()}
+          onPressOut={() => Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: true }).start()}
+          disabled={isPending}
+          style={styles.button}
+          accessibilityLabel="Send OTP button"
+        >
+          <Text style={styles.buttonText}>{isPending ? 'Sending OTP...' : 'Send OTP'}</Text>
+        </Pressable>
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  input:{
-    flex:1,
-    backgroundColor:'#fff',
-    alignItems:"center",
-    justifyContent:"center"
-  }
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    width: '100%',
+  },
+  button: {
+    padding: 15,
+    backgroundColor: '#007bff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 })

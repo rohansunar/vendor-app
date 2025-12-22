@@ -1,10 +1,11 @@
-import { getToken, removeToken } from '@/core/storage/secureStorage';
+import { getToken, removeToken, saveToken } from '@/core/storage/secureStorage';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
   logout: () => Promise<void>;
+  login: (token:string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,13 +22,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
+  async function login(token:string){
+    await saveToken(token);
+    setIsAuthenticated(true);
+  }
+
   async function logout() {
     await removeToken();
     setIsAuthenticated(false);
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

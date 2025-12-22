@@ -6,7 +6,7 @@ export const authService = {
     return apiClient.post(API_ENDPOINTS.REQUEST_OTP, { phone });
   },
 
-  verifyOtp(phone: string, otp: string) {
-    return apiClient.post(API_ENDPOINTS.VERIFY_OTP, { phone, otp });
+  verifyOtp(phone: string, code: string) {
+    return apiClient.post(API_ENDPOINTS.VERIFY_OTP, { phone, code });
   },
 };

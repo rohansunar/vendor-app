@@ -4,7 +4,6 @@ import { router } from 'expo-router';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-
   useAuthGuard();
 
   const { logout } = useAuth();
@@ -17,19 +16,16 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text>Welcome Home</Text>
-      <Button
-        title="Logout"
-        onPress={handleLogout}
-      />
+      <Button title="Logout" onPress={handleLogout} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    backgroundColor:'#fff',
-    alignItems:"center",
-    justifyContent:"center"
-  }
-})
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

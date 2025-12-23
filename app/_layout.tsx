@@ -24,7 +24,15 @@ function RootNavigator() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {/* Auth routes */}
+      <Stack.Screen name="(auth)" />
+
+      {/* App routes (with drawer) */}
+      <Stack.Screen name="(drawer)" />
+    </Stack>
+  );
 }
 
 export const unstable_settings = {

@@ -3,8 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { authService } from '../services/authService';
 
 export function useVerifyOtp() {
-  const { logout,login } = useAuth();
-  
+  const { logout, login } = useAuth();
+
   return useMutation({
     mutationFn: ({ phone, otp }: { phone: string; otp: string }) =>
       authService.verifyOtp(phone, otp),
@@ -15,8 +15,8 @@ export function useVerifyOtp() {
       await login(response.data.token);
     },
     onError: () => {
-     // console.log("// Defensive: ensure clean state")
-    // Defensive: ensure clean state
+      // console.log("// Defensive: ensure clean state")
+      // Defensive: ensure clean state
       logout();
     },
   });

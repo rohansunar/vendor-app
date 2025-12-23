@@ -5,7 +5,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
   logout: () => Promise<void>;
-  login: (token:string) => Promise<void>;
+  login: (token: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  async function login(token:string){
+  async function login(token: string) {
     await saveToken(token);
     setIsAuthenticated(true);
   }
@@ -43,9 +43,7 @@ export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      'useAuth must be used inside AuthProvider'
-    );
+    throw new Error('useAuth must be used inside AuthProvider');
   }
 
   return context;

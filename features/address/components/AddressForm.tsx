@@ -9,12 +9,11 @@ interface AddressFormProps {
   address?: Address;
   onSave: (data: {
     service_radius_m: number;
-    delivery_time_msg: string;
+    delivery_time_msg?: string;
     street: string;
-    cityId: string;
+    city: string;
     state: string;
     zipCode: string;
-    country: string;
     location: {
       lat: number;
       lng: number;
@@ -40,10 +39,9 @@ export function AddressForm({
   const [delivery_time_msg, setDeliveryTimeMsg] = useState(address?.delivery_time_msg || '');
 
   const [street, setStreet] = useState(address?.street || '');
-  const [cityId, setCityId] = useState(address?.cityId || '');
+  const [city, setCity] = useState(address?.city || '');
   const [state, setState] = useState(address?.state || '');
   const [zipCode, setZipCode] = useState(address?.zipCode || '');
-  const [country, setCountry] = useState(address?.country || '');
   const [lat, setLat] = useState(address?.location?.lat?.toString() || '');
   const [lng, setLng] = useState(address?.location?.lng?.toString() || '');
   const [fullAddress, setFullAddress] = useState(address?.address || '');
@@ -54,14 +52,13 @@ export function AddressForm({
   useEffect(() => {
     if (address) {
       setServiceRadiusM(address.service_radius_m.toString());
-      setDeliveryTimeMsg(address.delivery_time_msg);
+      setDeliveryTimeMsg(address.delivery_time_msg || '');
       setStreet(address.street);
-      setCityId(address.cityId);
+      setCity(address.city);
       setState(address.state);
       setZipCode(address.zipCode);
-      setCountry(address.country);
-      setLat(address.location.lat.toString());
-      setLng(address.location.lng.toString());
+      setLat(address.location?.lat?.toString() || '');
+      setLng(address.location?.lng?.toString() || '');
       setFullAddress(address.address);
     }
   }, [address]);
@@ -71,10 +68,9 @@ export function AddressForm({
       !service_radius_m ||
       !delivery_time_msg ||
       !street ||
-      !cityId ||
+      !city ||
       !state ||
       !zipCode ||
-      !country ||
       !lat ||
       !lng ||
       !fullAddress
@@ -93,10 +89,9 @@ export function AddressForm({
       service_radius_m: radius,
       delivery_time_msg,
       street,
-      cityId,
+      city,
       state,
       zipCode,
-      country,
       location: { lat: latitude, lng: longitude },
       address: fullAddress,
     });
@@ -129,9 +124,9 @@ export function AddressForm({
       />
 
       <TextInput
-        placeholder="City ID"
-        value={cityId}
-        onChangeText={setCityId}
+        placeholder="City"
+        value={city}
+        onChangeText={setCity}
         style={[styles.input, { color: textColor, borderColor: textColor }]}
       />
 
@@ -146,13 +141,6 @@ export function AddressForm({
         placeholder="Zip Code"
         value={zipCode}
         onChangeText={setZipCode}
-        style={[styles.input, { color: textColor, borderColor: textColor }]}
-      />
-
-      <TextInput
-        placeholder="Country"
-        value={country}
-        onChangeText={setCountry}
         style={[styles.input, { color: textColor, borderColor: textColor }]}
       />
 

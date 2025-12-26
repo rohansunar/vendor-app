@@ -22,7 +22,7 @@ export function AddressItem({ address, onPress }: AddressItemProps) {
     >
       <ThemedView style={styles.content}>
         <ThemedText style={[styles.title, { color: textColor }]}>
-          {address.street}, {address.cityId}, {address.state}
+          {address.street}, {address.city}, {address.state}
         </ThemedText>
         <Ionicons name="location-outline" size={20} color={tintColor} />
       </ThemedView>

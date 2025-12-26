@@ -16,12 +16,11 @@ export const addressService = {
    */
   createAddress(data: {
     service_radius_m: number;
-    delivery_time_msg: string;
+    delivery_time_msg?: string;
     street: string;
-    cityId: string;
+    city: string;
     state: string;
     zipCode: string;
-    country: string;
     location: {
       lat: number;
       lng: number;
@@ -39,12 +38,11 @@ export const addressService = {
     id: string,
     data: {
       service_radius_m: number;
-      delivery_time_msg: string;
+      delivery_time_msg?: string;
       street: string;
-      cityId: string;
+      city: string;
       state: string;
       zipCode: string;
-      country: string;
       location: {
         lat: number;
         lng: number;

@@ -1,13 +1,12 @@
 export type Address = {
   id: string;
   service_radius_m: number;
-  delivery_time_msg: string;
+  delivery_time_msg?: string;
   street: string;
-  cityId: string;
+  city: string;
   state: string;
   zipCode: string;
-  country: string;
-  location: {
+  location?: {
     lat: number;
     lng: number;
   };

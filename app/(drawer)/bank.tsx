@@ -1,5 +1,3 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { BankAccountForm } from '@/features/bank/components/BankAccountForm';
 import { BankAccountItem } from '@/features/bank/components/BankAccountItem';
 import { useBankAccounts } from '@/features/bank/hooks/useBankAccount';
@@ -7,10 +5,9 @@ import { useCreateBankAccount } from '@/features/bank/hooks/useCreateBankAccount
 import { useDeleteBankAccount } from '@/features/bank/hooks/useDeleteBankAccount';
 import { useUpdateBankAccount } from '@/features/bank/hooks/useUpdateBankAccount';
 import { BankAccount } from '@/features/bank/types';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { FlatList, Modal, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function BankScreen() {
   const { data: accounts, isLoading, error } = useBankAccounts();
@@ -24,22 +21,20 @@ export default function BankScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const backgroundColor = useThemeColor({}, 'background');
-  const tintColor = useThemeColor({}, 'tint');
 
   if (isLoading) {
     return (
-      <ThemedView style={styles.centered}>
-        <ThemedText>Loading bank accounts...</ThemedText>
-      </ThemedView>
+      <View style={styles.centered}>
+        <Text>Loading bank accounts...</Text>
+      </View>
     );
   }
 
   if (error) {
     return (
-      <ThemedView style={styles.centered}>
-        <ThemedText>Error loading bank accounts: {error.message}</ThemedText>
-      </ThemedView>
+      <View style={styles.centered}>
+        <Text>Error loading bank accounts: {error.message}</Text>
+      </View>
     );
   }
 
@@ -101,8 +96,8 @@ export default function BankScreen() {
   );
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
-      <ThemedText style={styles.title}>Bank Accounts</ThemedText>
+    <View style={styles.container}>
+      <Text style={styles.title}>Bank Accounts</Text>
 
       {accounts && accounts.length > 0 ? (
         <FlatList
@@ -113,17 +108,17 @@ export default function BankScreen() {
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <ThemedView style={styles.centered}>
-          <ThemedText>No Bank Accounts found</ThemedText>
-        </ThemedView>
+        <View style={styles.centered}>
+          <Text>No Bank Accounts found</Text>
+        </View>
       )}
 
-      <TouchableOpacity
-        style={[styles.fab, { backgroundColor: tintColor }]}
-        onPress={handleAddPress}
-      >
-        <Ionicons name="add" size={24} color="white" />
-      </TouchableOpacity>
+       <TouchableOpacity
+          style={[styles.fab, { backgroundColor: '#007AFF' }]}
+          onPress={handleAddPress}
+        >
+          <Ionicons name="add" size={24} color="white" />
+       </TouchableOpacity>
 
       <Modal
         visible={isModalVisible}
@@ -131,8 +126,8 @@ export default function BankScreen() {
         onRequestClose={handleCancel}
         transparent
       >
-        <ThemedView style={styles.modalOverlay}>
-          <ThemedView style={styles.modalContent}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
             <BankAccountForm
               account={selectedAccount || undefined}
               onSave={handleSave}
@@ -140,10 +135,10 @@ export default function BankScreen() {
               onCancel={handleCancel}
               isPending={createMutation.isPending || updateMutation.isPending}
             />
-          </ThemedView>
-        </ThemedView>
+          </View>
+        </View>
       </Modal>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -191,7 +186,6 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
     borderRadius: 8,
     elevation: 5,
-    shadowColor: '#0e64e6ff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 4,

@@ -26,7 +26,7 @@ export default function OtpScreen() {
       { phone, otp },
       {
         onSuccess: () => {
-          router.replace('/(drawer)/dashboard');
+          router.replace('/dashboard');
         },
         onError: (error) => {
           console.log(error);

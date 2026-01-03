@@ -1,8 +1,5 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BankAccount } from '../types';
 
 interface BankAccountItemProps {
@@ -11,25 +8,21 @@ interface BankAccountItemProps {
 }
 
 export function BankAccountItem({ account, onPress }: BankAccountItemProps) {
-  const backgroundColor = useThemeColor({}, 'background');
-  const textColor = useThemeColor({}, 'text');
-  const tintColor = useThemeColor({}, 'tint');
-
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor }]}
+      style={styles.container}
       onPress={onPress}
     >
-      <ThemedView style={styles.content}>
-        <ThemedText style={[styles.title, { color: textColor }]}>
-          {account.bankName} - {account.accountNumber}
-        </ThemedText>
+      <View style={styles.content}>
+        <Text style={styles.title}>
+          {account.accountHolderName} - {account.accountNumber} - {account.bankName}
+        </Text>
         <Ionicons
           name={account.is_verified ? 'checkmark-circle' : 'time-outline'}
           size={20}
           color={account.is_verified ? 'green' : 'orange'}
         />
-      </ThemedView>
+      </View>
     </TouchableOpacity>
   );
 }

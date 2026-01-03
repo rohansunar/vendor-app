@@ -1,8 +1,5 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { useEffect, useState } from 'react';
-import { Alert, Button, StyleSheet, TextInput } from 'react-native';
+import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { BankAccount } from '../types';
 
 interface BankAccountFormProps {
@@ -34,8 +31,6 @@ export function BankAccountForm({
   const [ifscCode, setIfscCode] = useState(account?.ifscCode || '');
   const [bankName, setBankName] = useState(account?.bankName || '');
 
-  const textColor = useThemeColor({}, 'text');
-  const backgroundColor = useThemeColor({}, 'background');
 
   useEffect(() => {
     if (account) {
@@ -68,16 +63,16 @@ export function BankAccountForm({
   const isEdit = !!account;
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
-      <ThemedText style={[styles.title, { color: textColor }]}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
         {isEdit ? 'Edit Bank Account' : 'Add Bank Account'}
-      </ThemedText>
+      </Text>
 
       <TextInput
         placeholder="Account Holder Name"
         value={accountHolderName}
         onChangeText={setAccountHolderName}
-        style={[styles.input, { color: textColor, borderColor: textColor }]}
+        style={styles.input}
       />
 
       <TextInput
@@ -85,7 +80,7 @@ export function BankAccountForm({
         value={accountNumber}
         onChangeText={setAccountNumber}
         keyboardType="number-pad"
-        style={[styles.input, { color: textColor, borderColor: textColor }]}
+        style={styles.input}
         editable={!account?.is_verified}
       />
 
@@ -94,7 +89,7 @@ export function BankAccountForm({
         value={ifscCode}
         onChangeText={setIfscCode}
         autoCapitalize="characters"
-        style={[styles.input, { color: textColor, borderColor: textColor }]}
+        style={styles.input}
         editable={!account?.is_verified}
       />
 
@@ -102,29 +97,29 @@ export function BankAccountForm({
         placeholder="Bank Name"
         value={bankName}
         onChangeText={setBankName}
-        style={[styles.input, { color: textColor, borderColor: textColor }]}
+        style={styles.input}
         editable={!account?.is_verified}
       />
 
       {account?.is_verified && (
-        <ThemedText style={styles.note}>
+        <Text style={styles.note}>
           Bank details are verified and cannot be edited.
-        </ThemedText>
+        </Text>
       )}
 
-      <ThemedView style={styles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <Button title="Cancel" onPress={onCancel} />
         <Button
           title={isPending ? 'Saving...' : 'Save'}
           onPress={handleSave}
           disabled={isPending}
         />
-      </ThemedView>
+      </View>
 
       {isEdit && onDelete && (
         <Button title="Delete" onPress={handleDelete} color="red" />
       )}
-    </ThemedView>
+    </View>
   );
 }
 

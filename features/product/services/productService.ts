@@ -13,7 +13,12 @@ export const productService = {
       .then((res) => res.data);
   },
 
-  createProduct(data: { name: string; description?: string; price: number }) {
+  createProduct(data: {
+    name: string;
+    description?: string;
+    price: number;
+    categoryId: string;
+  }) {
     return apiClient.post(API_ENDPOINTS.PRODUCT, data);
   },
 
@@ -24,8 +29,10 @@ export const productService = {
       description?: string;
       price: number;
       is_active: boolean;
+      categoryId: string;
     },
   ) {
+    console.log('Update Product', `${API_ENDPOINTS.PRODUCT}/${id}`, data);
     return apiClient.put(`${API_ENDPOINTS.PRODUCT}/${id}`, data);
   },
 

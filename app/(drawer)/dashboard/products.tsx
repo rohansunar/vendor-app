@@ -1,14 +1,15 @@
+import { ProductCard } from '@/features/product/components/ProductCard';
 import { useProducts } from '@/features/product/hooks/useProducts';
 import { router } from 'expo-router';
-import { Button, FlatList, Text, View } from 'react-native';
+import { Button, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 export default function ProductsTab() {
-  const { data, isLoading } = useProducts();
+  const { data, isLoading, refetch, isFetching } = useProducts();
 
-  if (isLoading) return <Text>Loading...</Text>;
+  if (isLoading) return null;
 
   return (
-    <View>
+    <View style={styles.container}>
       <Button
         title="Add Product"
         onPress={() => router.push('/dashboard/products/create')}
@@ -18,11 +19,33 @@ export default function ProductsTab() {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Text onPress={() => router.push(`/dashboard/products/${item.id}`)}>
-            {item.name}
-          </Text>
+          <ProductCard
+            product={item}
+            onPress={() =>
+              router.push(`/dashboard/products/${item.id}`)
+            }
+          />
         )}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+          />
+        }
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: '#F7F7F7',
+    flex: 1,
+  },
+  list: {
+    paddingTop: 12,
+  },
+});

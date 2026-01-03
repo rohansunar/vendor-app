@@ -1,10 +1,10 @@
 import { AppProvider } from '@/core/providers/AppProvider';
+import { useAuth } from '@/core/providers/AuthProvider';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useAuth } from '@/core/providers/AuthProvider';
-import { useEffect } from 'react';
 // Prevent splash from auto hiding
 SplashScreen.preventAutoHideAsync();
 
@@ -25,11 +25,6 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {/* Auth routes */}
-      <Stack.Screen name="(auth)" />
-
-      {/* App routes (with drawer) */}
-      <Stack.Screen name="(drawer)" />
     </Stack>
   );
 }

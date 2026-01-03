@@ -9,13 +9,11 @@ interface BankAccountItemProps {
 
 export function BankAccountItem({ account, onPress }: BankAccountItemProps) {
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.content}>
         <Text style={styles.title}>
-          {account.accountHolderName} - {account.accountNumber} - {account.bankName}
+          {account.accountHolderName} - {account.accountNumber} -{' '}
+          {account.bankName}
         </Text>
         <Ionicons
           name={account.is_verified ? 'checkmark-circle' : 'time-outline'}

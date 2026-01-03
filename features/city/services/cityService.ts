@@ -8,6 +8,6 @@ export type City = {
 
 export const cityService = {
   getCities() {
-    return apiClient.get(API_ENDPOINTS.CITIES).then(res => res.data);
+    return apiClient.get(API_ENDPOINTS.CITIES).then((res) => res.data);
   },
 };

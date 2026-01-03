@@ -31,7 +31,6 @@ export function BankAccountForm({
   const [ifscCode, setIfscCode] = useState(account?.ifscCode || '');
   const [bankName, setBankName] = useState(account?.bankName || '');
 
-
   useEffect(() => {
     if (account) {
       setAccountHolderName(account.accountHolderName);

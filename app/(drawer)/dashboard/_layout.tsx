@@ -9,6 +9,14 @@ export default function DashboardTabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="products/[id]"
+        options={{ href: null }} // hide index
+      />
+      <Tabs.Screen
+        name="products/create"
+        options={{ href: null }} // hide index
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',

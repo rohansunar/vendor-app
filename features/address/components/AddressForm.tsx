@@ -2,7 +2,15 @@ import { useCities } from '@/features/city/hooks/useCities';
 import { INDIAN_STATES } from '@/shared/constants/indianStates';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { AddressFormProps } from '../types';
 
 export function AddressForm({
@@ -104,11 +112,7 @@ export function AddressForm({
           <Picker.Item label="Select City" value="" />
 
           {cities?.map((city: any) => (
-            <Picker.Item
-              key={city.id}
-              label={city.name}
-              value={city.id}
-            />
+            <Picker.Item key={city.id} label={city.name} value={city.id} />
           ))}
         </Picker>
       </View>
@@ -122,11 +126,7 @@ export function AddressForm({
           <Picker.Item label="Select State" value="" />
 
           {INDIAN_STATES.map((stateName) => (
-            <Picker.Item
-              key={stateName}
-              label={stateName}
-              value={stateName}
-            />
+            <Picker.Item key={stateName} label={stateName} value={stateName} />
           ))}
         </Picker>
       </View>
@@ -187,30 +187,30 @@ export function AddressForm({
 }
 
 const styles = StyleSheet.create({
-   container: {
-     padding: 20,
-     backgroundColor: 'white',
-   },
-   title: {
-     fontSize: 18,
-     fontWeight: 'bold',
-     marginBottom: 16,
-     textAlign: 'center',
-     color: 'black',
-   },
-   input: {
-     borderWidth: 1,
-     padding: 12,
-     marginBottom: 12,
-     borderRadius: 4,
-     color: 'black',
-     borderColor: 'gray',
-   },
-   buttonContainer: {
-     flexDirection: 'row',
-     justifyContent: 'space-around',
-     marginTop: 16,
-   },
+  container: {
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+    color: 'black',
+  },
+  input: {
+    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 4,
+    color: 'black',
+    borderColor: 'gray',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 16,
+  },
   pickerWrapper: {
     borderWidth: 1,
     borderColor: 'gray',

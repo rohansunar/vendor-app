@@ -8,10 +8,13 @@ interface AddressItemProps {
 }
 
 export function AddressItem({ address, onPress }: AddressItemProps) {
-
-  {{address}}
+  {
+    {
+      address;
+    }
+  }
   // Handle location if it's a stringified object
-  let locationObj: { lat: number; lng: number; } | null = null;
+  let locationObj: { lat: number; lng: number } | null = null;
   if (address.location) {
     if (typeof address.location === 'string') {
       try {

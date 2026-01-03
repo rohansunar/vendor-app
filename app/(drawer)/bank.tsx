@@ -7,7 +7,14 @@ import { useUpdateBankAccount } from '@/features/bank/hooks/useUpdateBankAccount
 import { BankAccount } from '@/features/bank/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function BankScreen() {
   const { data: accounts, isLoading, error } = useBankAccounts();
@@ -20,7 +27,6 @@ export default function BankScreen() {
   );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
 
   if (isLoading) {
     return (
@@ -113,12 +119,12 @@ export default function BankScreen() {
         </View>
       )}
 
-       <TouchableOpacity
-          style={[styles.fab, { backgroundColor: '#007AFF' }]}
-          onPress={handleAddPress}
-        >
-          <Ionicons name="add" size={24} color="white" />
-       </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.fab, { backgroundColor: '#007AFF' }]}
+        onPress={handleAddPress}
+      >
+        <Ionicons name="add" size={24} color="white" />
+      </TouchableOpacity>
 
       <Modal
         visible={isModalVisible}

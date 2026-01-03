@@ -7,7 +7,14 @@ import { useUpdateAddress } from '@/features/address/hooks/useUpdateAddress';
 import { Address } from '@/features/address/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function AddressScreen() {
   const { data: addresses, isLoading, error } = useAddresses();
@@ -18,7 +25,6 @@ export default function AddressScreen() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-
 
   if (isLoading) {
     return (

@@ -52,9 +52,9 @@ export default function AddressScreen() {
     service_radius_m: number;
     delivery_time_msg?: string;
     street: string;
-    cityId: string;
+    city: string;
     state: string;
-    country: string;
+    zipCode: string;
     location: {
       lat: number;
       lng: number;

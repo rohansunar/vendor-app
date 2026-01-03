@@ -3,7 +3,7 @@ export type Address = {
   service_radius_m: number;
   delivery_time_msg?: string;
   street: string;
-  city: string;
+  cityId: string;
   state: string;
   zipCode: string;
   location?: {
@@ -20,7 +20,7 @@ export interface AddressFormProps {
     service_radius_m: number;
     delivery_time_msg?: string;
     street: string;
-    city: string;
+    cityId: string;
     state: string;
     zipCode: string;
     location: {

@@ -4,4 +4,5 @@ export const API_ENDPOINTS = {
   VENDOR_ME: '/vendor/me',
   BANK: '/vendor/bank-accounts',
   ADDRESS: '/vendor/addresses',
+  CITIES: '/cities',
 };

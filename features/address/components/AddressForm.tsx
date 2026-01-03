@@ -1,3 +1,6 @@
+import { useCities } from '@/features/city/hooks/useCities';
+import { INDIAN_STATES } from '@/shared/constants/indianStates';
+import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AddressFormProps } from '../types';
@@ -9,12 +12,12 @@ export function AddressForm({
   onCancel,
   isPending,
 }: AddressFormProps) {
-  
+  const { data: cities, isLoading: isCitiesLoading } = useCities();
   const [service_radius_m, setServiceRadiusM] = useState(
     address?.service_radius_m?.toString() || '',
   );
   const [street, setStreet] = useState(address?.street || '');
-  const [city, setCity] = useState(address?.city || '');
+  const [cityId, setCityId] = useState(address?.cityId || '');
   const [state, setState] = useState(address?.state || '');
   const [zipCode, setZipCode] = useState(address?.zipCode || '');
   const [lat, setLat] = useState(address?.location?.lat?.toString() || '');
@@ -25,7 +28,7 @@ export function AddressForm({
     if (address) {
       setServiceRadiusM(address.service_radius_m.toString());
       setStreet(address.street);
-      setCity(address.city);
+      setCityId(address.cityId);
       setState(address.state);
       setZipCode(address.zipCode);
       setLat(address.location?.lat?.toString() || '');
@@ -38,7 +41,7 @@ export function AddressForm({
     if (
       !service_radius_m ||
       !street ||
-      !city ||
+      !cityId ||
       !state ||
       !zipCode ||
       !lat ||
@@ -58,7 +61,7 @@ export function AddressForm({
     onSave({
       service_radius_m: radius,
       street,
-      city,
+      cityId,
       state,
       zipCode,
       location: { lat: latitude, lng: longitude },
@@ -92,19 +95,41 @@ export function AddressForm({
         style={styles.input}
       />
 
-      <TextInput
-        placeholder="City"
-        value={city}
-        onChangeText={setCity}
-        style={[styles.input]}
-      />
+      <Text>City</Text>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={cityId}
+          onValueChange={(value) => setCityId(value)}
+        >
+          <Picker.Item label="Select City" value="" />
 
-      <TextInput
-        placeholder="State"
-        value={state}
-        onChangeText={setState}
-        style={styles.input}
-      />
+          {cities?.map((city: any) => (
+            <Picker.Item
+              key={city.id}
+              label={city.name}
+              value={city.id}
+            />
+          ))}
+        </Picker>
+      </View>
+
+      <Text>State</Text>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={state}
+          onValueChange={(value) => setState(value)}
+        >
+          <Picker.Item label="Select State" value="" />
+
+          {INDIAN_STATES.map((stateName) => (
+            <Picker.Item
+              key={stateName}
+              label={stateName}
+              value={stateName}
+            />
+          ))}
+        </Picker>
+      </View>
 
       <TextInput
         placeholder="Zip Code"
@@ -186,4 +211,10 @@ const styles = StyleSheet.create({
      justifyContent: 'space-around',
      marginTop: 16,
    },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    marginBottom: 12,
+  },
 });

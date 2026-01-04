@@ -13,7 +13,7 @@ export const productImageService = {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }
+      },
     );
   },
 
@@ -21,25 +21,19 @@ export const productImageService = {
    * Delete a single image
    */
   deleteImage(productId: string, imageUrl: string) {
-    return apiClient.delete(
-      `${API_ENDPOINTS.PRODUCT_IMAGE}/${productId}`,
-       {
-        data: { imageUrl },
-      }
-    );
+    return apiClient.delete(`${API_ENDPOINTS.PRODUCT_IMAGE}/${productId}`, {
+      data: { imageUrl },
+    });
   },
 
   /**
    * Reorder images
    * Expects: [{ imageId, position }]
    */
-  reorderImages(
-    productId: string,
-    images: string[]
-  ) {
+  reorderImages(productId: string, images: string[]) {
     return apiClient.put(
       `${API_ENDPOINTS.PRODUCT_IMAGE}/${productId}/reorder`,
-       { imageIds:images }
+      { imageIds: images },
     );
   },
 };

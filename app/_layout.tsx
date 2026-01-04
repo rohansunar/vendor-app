@@ -23,10 +23,7 @@ function RootNavigator() {
     return null;
   }
 
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }}></Stack>;
 }
 
 export const unstable_settings = {

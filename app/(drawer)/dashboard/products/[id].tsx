@@ -15,18 +15,13 @@ export default function ProductDetailScreen() {
   return (
     <View style={{ padding: 16 }}>
       {/* 🔹 IMAGE MANAGEMENT SECTION */}
-      <ProductImageManager
-        productId={id}
-        images={data.images ?? []}
-      />
+      <ProductImageManager productId={id} images={data.images ?? []} />
 
       {/* 🔹 PRODUCT FORM */}
       <ProductForm
         product={data}
         isPending={isPending}
-        onSubmit={(formData) =>
-          mutate({ id, data: formData })
-        }
+        onSubmit={(formData) => mutate({ id, data: formData })}
       />
     </View>
   );

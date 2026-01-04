@@ -1,7 +1,13 @@
 import { ProductCard } from '@/features/product/components/ProductCard';
 import { useProducts } from '@/features/product/hooks/useProducts';
 import { router } from 'expo-router';
-import { Button, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 export default function ProductsTab() {
   const { data, isLoading, refetch, isFetching } = useProducts();
@@ -21,18 +27,13 @@ export default function ProductsTab() {
         renderItem={({ item }) => (
           <ProductCard
             product={item}
-            onPress={() =>
-              router.push(`/dashboard/products/${item.id}`)
-            }
+            onPress={() => router.push(`/dashboard/products/${item.id}`)}
           />
         )}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={refetch}
-          />
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
         }
       />
     </View>

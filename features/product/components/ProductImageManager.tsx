@@ -1,5 +1,12 @@
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useDeleteProductImage } from '../hooks/useDeleteProductImage';
 import { useReorderProductImages } from '../hooks/useReorderProductImages';
@@ -40,17 +47,10 @@ export function ProductImageManager({ productId, images }: Props) {
     ]);
   }
 
-//   /**
-//    * Called after drag-and-drop reorder
-//    */
-//   function handleReorder(newImages: string[]) {
-//     reorderMutation.mutate(newImages);
-//   }
-
   return (
-    <View>
-      <TouchableOpacity onPress={handlePickImages}>
-        {/* Add image button */}
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.addButton} onPress={handlePickImages}>
+        <Text style={styles.addText}>+ Add Images</Text>
       </TouchableOpacity>
 
       <DraggableFlatList

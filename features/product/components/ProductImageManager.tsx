@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import {
   Alert,
@@ -53,6 +54,10 @@ export function ProductImageManager({ productId, images }: Props) {
         <Text style={styles.addText}>+ Add Images</Text>
       </TouchableOpacity>
 
+      <Text style={styles.helperText}>
+        Tap ✕ to delete · Long press to reorder
+      </Text>
+
       <DraggableFlatList
         data={images}
         keyExtractor={(item) => item}
@@ -62,13 +67,29 @@ export function ProductImageManager({ productId, images }: Props) {
           reorderMutation.mutate(data);
         }}
         renderItem={({ item, drag }) => (
-          <TouchableOpacity
-            onLongPress={drag}
-            onPress={() => handleDelete(item)}
-            style={styles.imageWrapper}
-          >
-            <Image source={{ uri: item }} style={styles.image} />
-          </TouchableOpacity>
+          <View style={styles.imageContainer}>
+            {/* IMAGE */}
+            <TouchableOpacity
+              onLongPress={drag}
+              onPress={() => handleDelete(item)}
+              style={styles.imageWrapper}
+            >
+              <Image source={{ uri: item }} style={styles.image} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.deleteIcon}
+              onPress={() => handleDelete(item)}
+              disabled={deleteMutation.isPending}
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name="close-circle"
+                size={22}
+                color={deleteMutation.isPending ? '#B0B0B0' : '#FF3B30'}
+              />
+            </TouchableOpacity>
+          </View>
         )}
       />
     </View>
@@ -97,5 +118,20 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 8,
+  },
+  imageContainer: {
+    marginRight: 12,
+  },
+  deleteIcon: {
+    position: 'absolute',
+    top: -2,
+    right: -6,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 8,
   },
 });

@@ -1,7 +1,14 @@
 import { useCategories } from '@/features/category/hooks/useCategories';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import { Button, Switch, Text, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Product } from '../types';
 
 type Props = {
@@ -51,38 +58,146 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
 
   return (
     <View>
-      {/* Category dropdown */}
-      <Text>Category</Text>
-      <Picker
-        selectedValue={categoryId}
-        onValueChange={(value) => setCategoryId(value)}
+      {/* TITLE */}
+      <Text style={styles.title}>
+        {product ? 'Edit Product' : 'Create Product'}
+      </Text>
+
+      {/* BASIC INFO */}
+      <View style={styles.card}>
+        <Text style={styles.label}>Product Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. 20L Water Jar"
+          value={name}
+          onChangeText={setName}
+        />
+
+        <Text style={styles.label}>Category</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker selectedValue={categoryId} onValueChange={setCategoryId}>
+            <Picker.Item label="Select category" value="" />
+            {categories?.map((cat) => (
+              <Picker.Item key={cat.id} label={cat.name} value={cat.id} />
+            ))}
+          </Picker>
+        </View>
+
+        <Text style={styles.label}>Price (₹)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. 40"
+          keyboardType="numeric"
+          value={price}
+          onChangeText={setPrice}
+        />
+
+        {product && (
+          <View style={styles.switchRow}>
+            <Text style={styles.label}>Active</Text>
+            <Switch value={isActive} onValueChange={setIsActive} />
+          </View>
+        )}
+      </View>
+
+      {/* DESCRIPTION */}
+      <View style={styles.card}>
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Optional description"
+          multiline
+          numberOfLines={4}
+          textAlignVertical="top"
+          value={description}
+          onChangeText={setDescription}
+        />
+      </View>
+
+      {/* SAVE BUTTON */}
+      <TouchableOpacity
+        style={[styles.saveButton, isPending && styles.disabled]}
+        onPress={handleSubmit}
+        disabled={isPending}
       >
-        <Picker.Item label="Select Category" value="" />
-        {categories?.map((cat) => (
-          <Picker.Item key={cat.id} label={cat.name} value={cat.id} />
-        ))}
-      </Picker>
-      <TextInput placeholder="Name" value={name} onChangeText={setName} />
-      <TextInput
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-      />
-      <TextInput
-        placeholder="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-      />
-
-      {product && (
-        <>
-          <Text>Active</Text>
-          <Switch value={isActive} onValueChange={setIsActive} />
-        </>
-      )}
-
-      <Button title={isPending ? 'Saving...' : 'Save'} onPress={handleSubmit} />
+        <Text style={styles.saveText}>
+          {isPending ? 'Saving...' : 'Save Product'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 16,
+    color: '#111',
+  },
+
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 15,
+    backgroundColor: '#FFF',
+  },
+
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+
+  switchRow: {
+    marginTop: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+
+  saveText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  disabled: {
+    opacity: 0.6,
+  },
+});

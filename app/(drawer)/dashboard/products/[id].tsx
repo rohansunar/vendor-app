@@ -3,7 +3,8 @@ import { ProductImageManager } from '@/features/product/components/ProductImageM
 import { useProduct } from '@/features/product/hooks/useProduct';
 import { useUpdateProduct } from '@/features/product/hooks/useUpdateProduct';
 import { useLocalSearchParams } from 'expo-router';
-import { Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -13,16 +14,26 @@ export default function ProductDetailScreen() {
   if (isLoading || !data) return <Text>Loading...</Text>;
 
   return (
-    <View style={{ padding: 16 }}>
-      {/* 🔹 IMAGE MANAGEMENT SECTION */}
-      <ProductImageManager productId={id} images={data.images ?? []} />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <KeyboardAwareScrollView
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ padding: 16 }}
+      >
+        {/* <View style={{ padding: 16 }}> */}
+        {/* 🔹 IMAGE MANAGEMENT SECTION */}
+        <ProductImageManager productId={id} images={data.images ?? []} />
 
-      {/* 🔹 PRODUCT FORM */}
-      <ProductForm
-        product={data}
-        isPending={isPending}
-        onSubmit={(formData) => mutate({ id, data: formData })}
-      />
-    </View>
+        {/* 🔹 PRODUCT FORM */}
+        <ProductForm
+          product={data}
+          isPending={isPending}
+          onSubmit={(formData) => mutate({ id, data: formData })}
+        />
+      </KeyboardAwareScrollView>
+    </KeyboardAvoidingView>
   );
 }

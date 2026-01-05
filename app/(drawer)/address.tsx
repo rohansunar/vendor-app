@@ -1,3 +1,5 @@
+import { showError, showSuccess } from '@/core/ui/toast';
+import { getErrorMessage } from '@/core/utils/getErrorMessage';
 import { AddressForm } from '@/features/address/components/AddressForm';
 import { AddressItem } from '@/features/address/components/AddressItem';
 import { useAddresses } from '@/features/address/hooks/useAddresses';
@@ -58,7 +60,7 @@ export default function AddressScreen() {
     service_radius_m: number;
     delivery_time_msg?: string;
     street: string;
-    city: string;
+    cityId: string;
     state: string;
     zipCode: string;
     location: {
@@ -71,16 +73,24 @@ export default function AddressScreen() {
       updateMutation.mutate(
         { id: selectedAddress.id, data: formData },
         {
-          onSuccess: () => {
+          onSuccess: (res) => {
+            showSuccess(res?.data?.message || 'Address updated successfully');
             setIsModalVisible(false);
             setSelectedAddress(null);
+          },
+          onError: (error) => {
+            showError(getErrorMessage(error));
           },
         },
       );
     } else {
       createMutation.mutate(formData, {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          showSuccess(res?.data?.message || 'Address created successfully');
           setIsModalVisible(false);
+        },
+        onError: (error) => {
+          showError(getErrorMessage(error));
         },
       });
     }
@@ -89,12 +99,27 @@ export default function AddressScreen() {
   const handleDelete = () => {
     if (selectedAddress) {
       deleteMutation.mutate(selectedAddress.id, {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          showSuccess(res?.data?.message || 'Address deleted successfully');
           setIsModalVisible(false);
           setSelectedAddress(null);
         },
+        onError: (error) => {
+          showError(getErrorMessage(error));
+        },
       });
     }
+  };
+
+  const handleDeleteFromList = (id: string) => {
+    deleteMutation.mutate(id, {
+      onSuccess: (res) => {
+        showSuccess(res?.data?.message || 'Address deleted successfully');
+      },
+      onError: (error) => {
+        showError(getErrorMessage(error));
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -103,7 +128,7 @@ export default function AddressScreen() {
   };
 
   const renderItem = ({ item }: { item: Address }) => (
-    <AddressItem address={item} onPress={() => handleItemPress(item)} />
+    <AddressItem address={item} onPress={() => handleItemPress(item)} onDelete={() => handleDeleteFromList(item.id)} />
   );
 
   return (
@@ -137,17 +162,16 @@ export default function AddressScreen() {
         onRequestClose={handleCancel}
         transparent
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity style={styles.modalOverlay} onPress={handleCancel}>
+          <TouchableOpacity style={styles.modalContent} onPress={() => {}} activeOpacity={1}>
             <AddressForm
               address={selectedAddress || undefined}
               onSave={handleSave}
-              onDelete={isEditMode ? handleDelete : undefined}
               onCancel={handleCancel}
               isPending={createMutation.isPending || updateMutation.isPending}
             />
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
     </View>
   );

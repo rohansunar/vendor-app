@@ -17,7 +17,7 @@ export const addressService = {
   createAddress(data: {
     service_radius_m: number;
     street: string;
-    city: string;
+    cityId: string;
     state: string;
     zipCode: string;
     location: {
@@ -38,7 +38,7 @@ export const addressService = {
       service_radius_m: number;
       delivery_time_msg?: string;
       street: string;
-      city: string;
+      cityId: string;
       state: string;
       zipCode: string;
       location: {
@@ -48,6 +48,7 @@ export const addressService = {
       address: string;
     },
   ) {
+    console.log(data)
     return apiClient.put(`${API_ENDPOINTS.ADDRESS}/${id}`, data);
   },
 

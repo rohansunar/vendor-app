@@ -8,10 +8,6 @@ export function useCreateProduct() {
     mutationFn: productService.createProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
-    },
-    onError: (error) => {
-      console.log('❌ Address creation failed');
-      console.log(error);
-    },
+    }
   });
 }

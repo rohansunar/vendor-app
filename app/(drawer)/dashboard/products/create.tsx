@@ -1,3 +1,5 @@
+import { showError, showSuccess } from '@/core/ui/toast';
+import { getErrorMessage } from '@/core/utils/getErrorMessage';
 import { ProductForm } from '@/features/product/components/ProductForm';
 import { useCreateProduct } from '@/features/product/hooks/useCreateProduct';
 import { router } from 'expo-router';
@@ -21,7 +23,15 @@ export default function CreateProductScreen() {
           isPending={isPending}
           onSubmit={(data) => {
             mutate(data, {
-              onSuccess: () => router.back(),
+              onSuccess: (res) => {
+                showSuccess(
+                  res?.data?.message || 'Product created successfully',
+                );
+                router.replace('/dashboard/products');
+              },
+              onError: (error) => {
+                showError(getErrorMessage(error));
+              },
             });
           }}
         />

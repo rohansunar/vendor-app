@@ -5,9 +5,10 @@ import { Address } from '../types';
 interface AddressItemProps {
   address: Address;
   onPress: () => void;
+  onDelete?: () => void;
 }
 
-export function AddressItem({ address, onPress }: AddressItemProps) {
+export function AddressItem({ address, onPress, onDelete }: AddressItemProps) {
   {
     {
       address;
@@ -43,7 +44,14 @@ export function AddressItem({ address, onPress }: AddressItemProps) {
             </Text>
           )}
         </View>
-        <Ionicons name="location-outline" size={20} color={'#000'} />
+        <View style={styles.iconContainer}>
+          <Ionicons name="location-outline" size={20} color={'#000'} />
+          {onDelete && (
+            <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
+              <Ionicons name="trash-outline" size={20} color={'red'} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -77,5 +85,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     opacity: 0.7,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    marginLeft: 8,
   },
 });

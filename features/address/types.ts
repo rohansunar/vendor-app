@@ -4,6 +4,7 @@ export type Address = {
   delivery_time_msg?: string;
   street: string;
   cityId: string;
+  city: string;
   state: string;
   zipCode: string;
   location?: {
@@ -29,7 +30,6 @@ export interface AddressFormProps {
     };
     address: string;
   }) => void;
-  onDelete?: () => void;
   onCancel: () => void;
   isPending: boolean;
 }

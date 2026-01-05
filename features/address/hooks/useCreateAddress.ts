@@ -14,7 +14,6 @@ export function useCreateAddress() {
     },
     onError: (error) => {
       console.log('❌ Address creation failed');
-      console.log(error);
     },
   });
 }

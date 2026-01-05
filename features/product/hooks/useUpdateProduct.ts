@@ -9,6 +9,7 @@ export function useUpdateProduct() {
     mutationFn: ({ id, data }: any) => productService.updateProduct(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['products', variables.id] });
+      // queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 }

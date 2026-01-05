@@ -1,3 +1,5 @@
+import { showError, showSuccess } from '@/core/ui/toast';
+import { getErrorMessage } from '@/core/utils/getErrorMessage';
 import { ProductForm } from '@/features/product/components/ProductForm';
 import { ProductImageManager } from '@/features/product/components/ProductImageManager';
 import { useProduct } from '@/features/product/hooks/useProduct';
@@ -39,7 +41,19 @@ export default function ProductDetailScreen() {
         <ProductForm
           product={data}
           isPending={isPending}
-          onSubmit={(formData) => mutate({ id, data: formData })}
+          onSubmit={(formData) =>
+            mutate(
+              { id, data: formData },
+              {
+                onSuccess: (res) => {
+                  showSuccess(res?.data?.message || 'Product updated successfully');
+                },
+                onError: (error) => {
+                  showError(getErrorMessage(error));
+                },
+              },
+            )
+          }
         />
       </KeyboardAwareScrollView>
     </KeyboardAvoidingView>

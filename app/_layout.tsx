@@ -1,9 +1,11 @@
 import { AppProvider } from '@/core/providers/AppProvider';
 import { useAuth } from '@/core/providers/AuthProvider';
+import { toastConfig } from '@/core/ui/toastConfig';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 // Prevent splash from auto hiding
 SplashScreen.preventAutoHideAsync();
@@ -34,6 +36,7 @@ export default function RootLayout() {
   return (
     <AppProvider>
       <RootNavigator />
+      <Toast config={toastConfig} />
       {/* <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

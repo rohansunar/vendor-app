@@ -15,7 +15,6 @@ export function useDeleteProductImage(productId: string) {
     },
     onError: (error) => {
       console.log('❌ Image Delete failed');
-      console.log(error);
     },
   });
 }

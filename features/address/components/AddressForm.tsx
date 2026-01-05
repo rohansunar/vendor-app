@@ -1,22 +1,22 @@
 import { useCities } from '@/features/city/hooks/useCities';
 import { INDIAN_STATES } from '@/shared/constants/indianStates';
+import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  Button,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  View,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { AddressFormProps } from '../types';
 
 export function AddressForm({
   address,
   onSave,
-  onDelete,
   onCancel,
   isPending,
 }: AddressFormProps) {
@@ -77,24 +77,19 @@ export function AddressForm({
     });
   };
 
-  const handleDelete = () => {
-    Alert.alert(
-      'Delete Address',
-      'Are you sure you want to delete this address?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: onDelete },
-      ],
-    );
-  };
 
   const isEdit = !!address;
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>
-        {isEdit ? 'Edit Address' : 'Add Address'}
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>
+          {isEdit ? 'Edit Address' : 'Add Address'}
+        </Text>
+        <TouchableOpacity onPress={onCancel}>
+          <Ionicons name="close" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
 
       <TextInput
         placeholder="Street"
@@ -170,18 +165,9 @@ export function AddressForm({
         style={styles.input}
       />
 
-      <View style={styles.buttonContainer}>
-        <Button title="Cancel" onPress={onCancel} />
-        <Button
-          title={isPending ? 'Saving...' : 'Save'}
-          onPress={handleSave}
-          disabled={isPending}
-        />
-      </View>
-
-      {isEdit && onDelete && (
-        <Button title="Delete" onPress={handleDelete} color="red" />
-      )}
+      <TouchableOpacity style={[styles.saveButton, isPending && styles.disabledButton]} onPress={isPending ? () => {} : handleSave}>
+        <Text style={styles.saveButtonText}>{isPending ? 'Saving...' : 'Save'}</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -198,6 +184,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   input: {
     borderWidth: 1,
     padding: 12,
@@ -206,15 +198,25 @@ const styles = StyleSheet.create({
     color: 'black',
     borderColor: 'gray',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 16,
-  },
   pickerWrapper: {
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 4,
     marginBottom: 12,
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });

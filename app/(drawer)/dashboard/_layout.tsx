@@ -17,6 +17,14 @@ export default function DashboardTabsLayout() {
         options={{ href: null }} // hide index
       />
       <Tabs.Screen
+        name="bank/create"
+        options={{ href: null }} // hide index
+      />
+      <Tabs.Screen
+        name="bank/[id]"
+        options={{ href: null }} // hide index
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',

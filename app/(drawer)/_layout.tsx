@@ -1,5 +1,6 @@
 import { AppDrawerContent } from '@/shared/components/AppDrawerContent';
 import { useAuthGuard } from '@/shared/hooks/useAuthGuard';
+import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 
 export default function DrawerLayout() {
@@ -12,7 +13,15 @@ export default function DrawerLayout() {
     >
       <Drawer.Screen name="dashboard" options={{ title: 'Dashboard' }} />
       <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
-      <Drawer.Screen name="bank" options={{ title: 'Bank' }} />
+      <Drawer.Screen
+        name="bank"
+        options={{
+          title: 'Bank',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="card-outline" size={size} color={color} />
+          ),
+        }}
+      />
       <Drawer.Screen name="address" options={{ title: 'Address' }} />
     </Drawer>
   );

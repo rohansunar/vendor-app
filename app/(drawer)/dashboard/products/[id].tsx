@@ -18,6 +18,9 @@ export default function ProductDetailScreen() {
   }
 
   if (isLoading || !data) return <Text>Loading...(Product)</Text>;
+  if (!data) {
+    return <Text>Order not found</Text>;
+  }
   if (!data.is_active) {
     return (
       <View style={{ padding: 16 }}>

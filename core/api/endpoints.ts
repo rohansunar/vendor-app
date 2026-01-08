@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   PRODUCT: '/products',
   PRODUCT_IMAGE: '/products/image',
   CATEGORIES: '/categories',
+  VENDOR_ORDER: '/vendor/orders',
 };

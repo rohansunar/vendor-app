@@ -10,8 +10,10 @@ import { authService } from '../services/authService';
 export function useRequestOtp() {
   return useMutation({
     mutationFn: (phone: string) => {
-      // console.log('useRequestOtp mutationFn called with phone:', phone);
-      return authService.requestOtp(phone);
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        throw new Error('Invalid mobile number');
+      }
+      return authService.requestOtp({ phone });
     },
   });
 }

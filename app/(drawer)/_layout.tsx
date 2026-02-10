@@ -11,7 +11,6 @@ export default function DrawerLayout() {
       drawerContent={(props) => <AppDrawerContent {...props} />}
       screenOptions={{ headerShown: true }}
     >
-      <Drawer.Screen name="dashboard" options={{ title: 'Dashboard' }} />
       <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
       <Drawer.Screen
         name="bank"

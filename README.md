@@ -48,3 +48,168 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+```
+src/
+├── app/                            # expo-router ONLY
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   ├── auth/
+│   │   ├── login.tsx
+│   │   └── otp.tsx
+│   ├── address/
+│   │   └── select.tsx
+│   ├── product/
+│   │   ├── create.tsx
+│   │   └── images.tsx
+│   ├── orders/
+│   │   ├── index.tsx
+│   │   └── [orderId].tsx
+│   ├── delivery/
+│   │   └── confirm.tsx
+│   ├── profile/
+│   │   └── edit.tsx
+│   └── bank/
+│       └── manage.tsx
+│
+├── features/
+│
+│   ├── auth/
+│   │   ├── components/
+│   │   │   └── AuthForm.tsx
+│   │   │   └── auth.styles.ts
+│   │   ├── hooks/
+│   │   │   ├── useLogin.ts
+│   │   │   └── useVerifyOtp.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.store.ts
+│   │   ├── auth.schema.ts
+│   │   ├── auth.types.ts
+│   │   └── index.ts
+│
+│   ├── address/
+│   │   ├── components/
+│   │   │   ├── AddressMap.tsx
+│   │   │   └── address.styles.ts
+│   │   ├── hooks/
+│   │   │   └── useAddress.ts
+│   │   ├── address.service.ts
+│   │   ├── address.schema.ts
+│   │   ├── address.types.ts
+│   │   └── index.ts
+│
+│   ├── product/
+│   │   ├── components/
+│   │   │   ├── ProductForm.tsx
+│   │   │   ├── ProductImagePicker.tsx
+│   │   │   └── product.styles.ts
+│   │   ├── hooks/
+│   │   │   ├── useCreateProduct.ts
+│   │   │   ├── useUpdateProduct.ts
+│   │   │   └── useUploadProductImage.ts
+│   │   ├── product.service.ts
+│   │   ├── product.schema.ts
+│   │   ├── product.types.ts
+│   │   └── index.ts
+│
+│   ├── orders/
+│   │   ├── components/
+│   │   │   ├── OrderCard.tsx
+│   │   │   └── orders.styles.ts
+│   │   ├── hooks/
+│   │   │   ├── useOrders.ts
+│   │   │   └── useUpdateOrderStatus.ts
+│   │   ├── orders.service.ts
+│   │   ├── orders.types.ts
+│   │   └── index.ts
+│
+│   ├── delivery/
+│   │   ├── components/
+│   │   │   └── DeliveryProofCamera.tsx
+│   │   ├── hooks/
+│   │   │   └── useConfirmDelivery.ts
+│   │   ├── delivery.service.ts
+│   │   ├── delivery.types.ts
+│   │   └── index.ts
+│
+│   ├── profile/
+│   │   ├── components/
+│   │   │   └── ProfileForm.tsx
+│   │   ├── hooks/
+│   │   │   └── useUpdateProfile.ts
+│   │   ├── profile.service.ts
+│   │   ├── profile.types.ts
+│   │   └── index.ts
+│
+│   └── bank/
+│       ├── components/
+│       │   └── BankForm.tsx
+│       ├── hooks/
+│       │   ├── useAddBank.ts
+│       │   ├── useUpdateBank.ts
+│       │   └── useDeleteBank.ts
+│       ├── bank.service.ts
+│       ├── bank.schema.ts
+│       ├── bank.types.ts
+│       └── index.ts
+│
+├── shared/
+│   ├── api/
+│   │   └── client.ts
+│   ├── ui/
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   └── Loader.tsx
+│   ├── hooks/
+│   │   └── usePushNotifications.ts
+│   ├── styles/
+│   │   ├── theme.ts
+│   │   └── spacing.ts
+│   ├── utils/
+│   │   ├── permissions.ts
+│   │   └── errors.ts
+│   └── constants.ts
+│
+├── providers/
+│   ├── AuthProvider.tsx
+│   └── QueryProvider.tsx
+│
+├── tests/
+├── assets/
+├── app.config.ts
+└── main.tsx
+```
+
+The index.ts Pattern (Very Important)
+
+Every feature exposes a public API.
+
+// features/product/index.ts
+export _ from './components/ProductForm';
+export _ from './hooks/useCreateProduct';
+export \* from './hooks/useUploadProductImage';
+
+Now imports look like:
+
+import { ProductForm, useCreateProduct } from '@/features/product';
+
+Before creating a file, ask:
+
+Is this feature-specific?
+→ keep inside feature
+
+Is this pure UI?
+→ components/
+
+Is this one business action?
+→ one hook
+
+Is this backend/native interaction?
+→ service
+
+Used by 2+ features?
+→ shared/
+
+If unsure → keep it inside the feature
+
+Add ESLint boundary rules

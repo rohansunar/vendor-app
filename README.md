@@ -153,7 +153,7 @@ src/
 │       ├── bank.types.ts
 │       └── index.ts
 │
-├── shared/
+├── shared/  # cross-feature only
 │   ├── api/
 │   │   └── client.ts
 │   ├── ui/
@@ -183,11 +183,6 @@ src/
 The index.ts Pattern (Very Important)
 
 Every feature exposes a public API.
-
-// features/product/index.ts
-export _ from './components/ProductForm';
-export _ from './hooks/useCreateProduct';
-export \* from './hooks/useUploadProductImage';
 
 Now imports look like:
 

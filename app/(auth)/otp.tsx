@@ -8,17 +8,17 @@ import { authStyles } from '@/features/auth/components/auth.styles';
 import { useVerifyOtp } from '@/features/auth/hooks/useVerifyOtp';
 import { hapticError, hapticSuccess } from '@/shared/utils/haptics';
 
-
+const RESEND_INTERVAL = 180; // 3 minutes
 export default function OtpScreen() {
   const { phone } = useLocalSearchParams<{ phone: string }>();
   const { mutateAsync } = useVerifyOtp();
 
   const [error, setError] = useState(false);
-  const [timer, setTimer] = useState(180);
+  const [timer, setTimer] = useState(RESEND_INTERVAL);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(t => (t > 0 ? t - 1 : 0));
+      setTimer((t) => (t > 0 ? t - 1 : 0));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -31,8 +31,8 @@ export default function OtpScreen() {
       hapticSuccess();
       // store token (next section)
       await saveToken(result.data.token);
-      router.replace('/dashboard');
-    } catch(error) {
+      router.replace('/(protected)/(tabs)/dashboard');
+    } catch (error) {
       setError(true);
       hapticError();
     }
@@ -41,18 +41,11 @@ export default function OtpScreen() {
   return (
     <View style={authStyles.container}>
       <View style={authStyles.card}>
-        <Text style={authStyles.title}>
-          Verify OTP
-        </Text>
+        <Text style={authStyles.title}>Verify OTP</Text>
 
-        <Text style={authStyles.subtitle}>
-          Code sent to {phone}
-        </Text>
+        <Text style={authStyles.subtitle}>Code sent to {phone}</Text>
 
-        <OtpInput
-          onComplete={handleOtpComplete}
-          hasError={error}
-        />
+        <OtpInput onComplete={handleOtpComplete} hasError={error} />
 
         {error && (
           <Text style={authStyles.errorText}>
@@ -63,7 +56,7 @@ export default function OtpScreen() {
         <Text style={authStyles.timerText}>
           {timer > 0
             ? `Time remaining: ${Math.floor(
-                timer / 60
+                timer / 60,
               )}:${String(timer % 60).padStart(2, '0')}`
             : 'OTP expired. Request a new one.'}
         </Text>

@@ -1,11 +1,7 @@
 import * as Haptics from 'expo-haptics';
 
 export const hapticSuccess = () =>
-  Haptics.notificationAsync(
-    Haptics.NotificationFeedbackType.Success
-  );
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
 export const hapticError = () =>
-  Haptics.notificationAsync(
-    Haptics.NotificationFeedbackType.Error
-  );
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);

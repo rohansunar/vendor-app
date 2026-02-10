@@ -13,7 +13,7 @@ export default function LoginScreen() {
       setError(undefined);
       await mutateAsync(phone);
       router.push({
-        pathname: '/auth/otp',
+        pathname: '/(auth)/otp',
         params: { phone },
       });
     } catch (e: any) {

@@ -3,50 +3,64 @@ import { StyleSheet } from 'react-native';
 export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0F1F', // deep navy
+    backgroundColor: '#F8FAFF',
     paddingHorizontal: 24,
     justifyContent: 'center',
   },
 
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+
+  logoText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#2563EB',
+    letterSpacing: -0.5,
+  },
+
   card: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 24,
-    backgroundColor: '#0F172A',
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '600',
-    color: '#E5E7EB',
-    letterSpacing: -0.4,
+    color: '#0F172A',
+    marginBottom: 8,
   },
 
   subtitle: {
-    fontSize: 15,
-    color: '#9CA3AF',
-    marginTop: 6,
+    fontSize: 14,
+    color: '#64748B',
     marginBottom: 24,
   },
 
   input: {
-    height: 56,
+    height: 54,
     borderRadius: 14,
     paddingHorizontal: 16,
-    fontSize: 18,
-    color: '#E5E7EB',
-    backgroundColor: '#020617',
+    fontSize: 16,
+    color: '#0F172A',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
   },
 
   errorText: {
-    color: '#EF4444',
+    color: '#DC2626',
+    fontSize: 13,
     marginTop: 8,
-    fontSize: 14,
   },
 
-  /* OTP specific */
   otpRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -54,39 +68,25 @@ export const authStyles = StyleSheet.create({
   },
 
   otpBox: {
-    width: 48,
-    height: 56,
-    borderRadius: 14,
+    width: 46,
+    height: 54,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#020617',
     borderWidth: 1,
+    backgroundColor: '#FFFFFF',
   },
 
   otpText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
-    color: '#E5E7EB',
+    color: '#0F172A',
   },
 
   timerText: {
     marginTop: 16,
-    fontSize: 14,
-    color: '#9CA3AF',
+    fontSize: 13,
+    color: '#64748B',
     textAlign: 'center',
-  },
-
-  button: {
-    height: 56,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 24,
-  },
-
-  buttonText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 });

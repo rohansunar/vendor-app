@@ -16,15 +16,15 @@ export function GradientButton({ title, onPress, loading, disabled }: Props) {
       style={{ marginTop: 24 }}
     >
       <LinearGradient
-        colors={['#2563EB', '#1E40AF']}
+        colors={['#2563EB', '#1D4ED8']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          height: 56,
+          height: 54,
           borderRadius: 14,
           alignItems: 'center',
           justifyContent: 'center',
-          opacity: disabled ? 0.6 : 1,
+          opacity: disabled || loading ? 0.6 : 1,
         }}
       >
         {loading ? (
@@ -33,7 +33,7 @@ export function GradientButton({ title, onPress, loading, disabled }: Props) {
           <Text
             style={{
               color: '#FFFFFF',
-              fontSize: 17,
+              fontSize: 16,
               fontWeight: '600',
             }}
           >

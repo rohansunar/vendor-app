@@ -1,5 +1,6 @@
-import { getToken } from '@/core/storage/secureStorage';
+import { getToken, removeToken } from '@/core/storage/secureStorage';
 import axios from 'axios';
+import { router } from 'expo-router';
 import { ENV } from '../config/env';
 
 // Create axios instance
@@ -20,6 +21,17 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  },
+);
+
+apiClient.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    if (error.response?.status === 401) {
+      removeToken();
+      router.replace('/(auth)/login');
+    }
     return Promise.reject(error);
   },
 );

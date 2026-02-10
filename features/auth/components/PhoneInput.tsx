@@ -7,7 +7,6 @@ import { Keyboard } from 'react-native';
 import { PhoneLoginFormValues, phoneSchema } from '../auth.schema';
 import { authStyles } from './auth.styles';
 
-
 type Props = {
   onSubmit: (phone: string) => Promise<void>;
   isPending: boolean;
@@ -25,20 +24,28 @@ export function PhoneLoginForm({ onSubmit, isPending, serverError }: Props) {
 
   return (
     <View style={authStyles.container}>
+      {/* Logo */}
+      <View style={authStyles.logoContainer}>
+        <Text style={authStyles.logoText}>Quick Serve</Text>
+      </View>
+
+      {/* Card */}
       <View style={authStyles.card}>
         <Text style={authStyles.title}>Login with mobile</Text>
 
-        <Text style={authStyles.subtitle}>Enter your number to continue</Text>
+        <Text style={authStyles.subtitle}>
+          We’ll send you a verification code
+        </Text>
 
         <TextInput
           keyboardType="number-pad"
           maxLength={10}
-          placeholder="10-digit mobile number"
-          placeholderTextColor="#6B7280"
+          placeholder="Enter mobile number"
+          placeholderTextColor="#94A3B8"
           style={[
             authStyles.input,
             {
-              borderColor: errors.phone ? '#EF4444' : '#1E40AF',
+              borderColor: errors.phone ? '#DC2626' : '#CBD5E1',
             },
           ]}
           onChangeText={(text) =>
@@ -47,9 +54,11 @@ export function PhoneLoginForm({ onSubmit, isPending, serverError }: Props) {
             })
           }
         />
+
         {errors.phone && (
           <Text style={authStyles.errorText}>{errors.phone.message}</Text>
         )}
+
         {serverError && <Text style={authStyles.errorText}>{serverError}</Text>}
 
         <GradientButton
@@ -57,7 +66,7 @@ export function PhoneLoginForm({ onSubmit, isPending, serverError }: Props) {
           loading={isPending}
           disabled={isPending}
           onPress={handleSubmit((data) => {
-            Keyboard.dismiss();   // 👈 hides keyboard
+            Keyboard.dismiss(); // 👈 hides keyboard
             onSubmit(data.phone);
           })}
         />

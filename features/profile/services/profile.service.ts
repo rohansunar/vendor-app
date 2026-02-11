@@ -10,7 +10,7 @@ const IMMUTABLE_FIELDS = [
   'created_at',
   'updated_at',
   'is_active',
-  'is_available_today'
+  'is_available_today',
 ];
 
 export async function fetchProfile(): Promise<VendorProfile> {
@@ -28,19 +28,15 @@ function getChangedFields(updated: any) {
   return changed;
 }
 
-
-export async function updateProfile(
-  payload: Partial<VendorProfile>
-) {
+export async function updateProfile(payload: Partial<VendorProfile>) {
   try {
-  payload = getChangedFields(payload)
-  const res = await apiClient.put(API_ENDPOINTS.VENDOR_ME, payload);
-  return res.data;
+    payload = getChangedFields(payload);
+    const res = await apiClient.put(API_ENDPOINTS.VENDOR_ME, payload);
+    return res.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        error.response?.data?.message ||
-          'Failed to update profile'
+        error.response?.data?.message || 'Failed to update profile',
       );
     }
 
@@ -48,3 +44,16 @@ export async function updateProfile(
   }
 }
 
+export async function updateAvailability(is_available_today: boolean) {
+  try {
+    await apiClient.put(API_ENDPOINTS.AVAILABILITY, { is_available_today });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || 'Failed to update profile',
+      );
+    }
+
+    throw new Error('Unexpected error occurred');
+  }
+}

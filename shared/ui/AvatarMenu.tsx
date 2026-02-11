@@ -2,13 +2,7 @@ import { removeToken } from '@/core/storage/secureStorage';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export function AvatarMenu() {
   const [open, setOpen] = useState(false);
@@ -51,15 +45,12 @@ export function AvatarMenu() {
     <>
       {/* Outside tap overlay */}
       {open && (
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={closeMenu}
-        />
+        <Pressable style={StyleSheet.absoluteFill} onPress={closeMenu} />
       )}
 
       <View style={{ position: 'relative' }}>
         {/* Avatar */}
-        <Pressable onPress={() => setOpen(v => !v)}>
+        <Pressable onPress={() => setOpen((v) => !v)}>
           <View style={styles.avatar}>
             <Feather name="user" size={18} color="#FFF" />
           </View>
@@ -79,9 +70,7 @@ export function AvatarMenu() {
             <MenuItem
               icon="user"
               label="Profile"
-              onPress={() =>
-                navigate('/(protected)/(tabs)/profile')
-              }
+              onPress={() => navigate('/(protected)/(tabs)/profile')}
             />
 
             <Divider />
@@ -89,19 +78,12 @@ export function AvatarMenu() {
             <MenuItem
               icon="credit-card"
               label="Bank Account"
-              onPress={() =>
-                navigate('/(protected)/bank')
-              }
+              onPress={() => navigate('/(protected)/bank')}
             />
 
             <Divider />
 
-            <MenuItem
-              icon="log-out"
-              label="Logout"
-              danger
-              onPress={logout}
-            />
+            <MenuItem icon="log-out" label="Logout" danger onPress={logout} />
           </Animated.View>
         )}
       </View>
@@ -130,17 +112,8 @@ function MenuItem({
         pressed && { backgroundColor: '#F1F5F9' },
       ]}
     >
-      <Feather
-        name={icon}
-        size={16}
-        color={danger ? '#DC2626' : '#334155'}
-      />
-      <Text
-        style={[
-          styles.itemText,
-          danger && { color: '#DC2626' },
-        ]}
-      >
+      <Feather name={icon} size={16} color={danger ? '#DC2626' : '#334155'} />
+      <Text style={[styles.itemText, danger && { color: '#DC2626' }]}>
         {label}
       </Text>
     </Pressable>

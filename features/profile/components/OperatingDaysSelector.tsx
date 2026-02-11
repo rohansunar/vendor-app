@@ -1,13 +1,13 @@
 import { Pressable, Text, View } from 'react-native';
 
 const DAYS = [
-  "SUNDAY",
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY",
+  'SUNDAY',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
 ];
 
 export function OperatingDaysSelector({
@@ -26,10 +26,8 @@ export function OperatingDaysSelector({
   }
 
   return (
-   <View style={{ marginBottom: 16 }}>
-      <Text style={{ marginBottom: 8 }}>
-        Operating Days
-      </Text>
+    <View style={{ marginBottom: 16 }}>
+      <Text style={{ marginBottom: 8 }}>Operating Days</Text>
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {DAYS.map((day) => {
@@ -46,22 +44,17 @@ export function OperatingDaysSelector({
                 borderWidth: 1,
                 marginRight: 8,
                 marginBottom: 8,
-                backgroundColor: active
-                  ? '#2563EB'
-                  : '#FFFFFF',
-                borderColor: active
-                  ? '#2563EB'
-                  : '#CBD5E1',
+                backgroundColor: active ? '#2563EB' : '#FFFFFF',
+                borderColor: active ? '#2563EB' : '#CBD5E1',
               }}
             >
               <Text
                 style={{
-                  color: active
-                    ? '#FFFFFF'
-                    : '#334155',
+                  color: active ? '#FFFFFF' : '#334155',
                 }}
               >
-                {day.toLowerCase().charAt(0).toUpperCase() + day.toLowerCase().slice(1, 3)}
+                {day.toLowerCase().charAt(0).toUpperCase() +
+                  day.toLowerCase().slice(1, 3)}
               </Text>
             </Pressable>
           );

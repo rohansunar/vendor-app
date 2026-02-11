@@ -7,7 +7,7 @@ export default function ProfileScreen() {
   const { data, isLoading, isError } = useProfile();
   const update = useUpdateProfile();
 
-   if (isLoading) {
+  if (isLoading) {
     return (
       <View style={profileStyles.centered}>
         <Text>Loading profile…</Text>
@@ -32,18 +32,12 @@ export default function ProfileScreen() {
       {/* ---------- Profile Header ---------- */}
       <View style={profileStyles.profileHeader}>
         <View style={profileStyles.avatarLarge}>
-          <Text style={profileStyles.avatarText}>
-            {data.name.charAt(0)}
-          </Text>
+          <Text style={profileStyles.avatarText}>{data.name.charAt(0)}</Text>
         </View>
 
-        <Text style={profileStyles.profileName}>
-          {data.name}
-        </Text>
+        <Text style={profileStyles.profileName}>{data.name}</Text>
 
-        <Text style={profileStyles.businessName}>
-          {data.business_name}
-        </Text>
+        <Text style={profileStyles.businessName}>{data.business_name}</Text>
       </View>
 
       {/* ---------- Form Card ---------- */}

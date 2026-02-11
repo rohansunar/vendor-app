@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
-   const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -73,11 +73,11 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-      name="profile"
-      options={{
-        href: null, // 👈 hides from bottom tab bar
-        headerTitle: 'Profile',
-      }}
+        name="profile"
+        options={{
+          href: null, // 👈 hides from bottom tab bar
+          headerTitle: 'Profile',
+        }}
       />
     </Tabs>
   );

@@ -3,7 +3,7 @@ import Toast from 'react-native-toast-message';
 import { updateProfile } from '../services/profile.service';
 
 export function useUpdateProfile() {
-   const qc = useQueryClient();
+  const qc = useQueryClient();
 
   return useMutation({
     mutationFn: updateProfile,
@@ -24,9 +24,7 @@ export function useUpdateProfile() {
       Toast.show({
         type: 'error',
         text1: 'Update Failed',
-        text2:
-          error?.message ||
-          'Something went wrong. Please try again.',
+        text2: error?.message || 'Something went wrong. Please try again.',
         position: 'top',
         visibilityTime: 3000,
       });

@@ -1,10 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
-import {
-    Pressable,
-    Text,
-    View
-} from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 export function TimePickerField({
   label,
@@ -20,21 +16,15 @@ export function TimePickerField({
   function handleChange(event: any, selectedDate?: Date) {
     setShow(false);
     if (selectedDate) {
-      const hours = selectedDate.getHours()
-        .toString()
-        .padStart(2, '0');
-      const minutes = selectedDate.getMinutes()
-        .toString()
-        .padStart(2, '0');
+      const hours = selectedDate.getHours().toString().padStart(2, '0');
+      const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
       onChange(`${hours}:${minutes}`);
     }
   }
 
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontSize: 13, marginBottom: 6 }}>
-        {label}
-      </Text>
+      <Text style={{ fontSize: 13, marginBottom: 6 }}>{label}</Text>
 
       <Pressable
         onPress={() => setShow(true)}

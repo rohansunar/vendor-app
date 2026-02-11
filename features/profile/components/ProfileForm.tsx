@@ -1,6 +1,6 @@
 import { GradientButton } from '@/shared/ui/GradientButton';
 import { TimePickerField } from '@/shared/ui/TimePickerField';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { VendorProfile } from '../profile.types';
 import { AvailabilityToggle } from './AvailabilityToggle';
@@ -16,30 +16,26 @@ type Props = {
 export function ProfileForm({ data, onSave, loading }: Props) {
   const [form, setForm] = useState(data);
 
+  useEffect(() => {
+    setForm(data);
+  }, [data]);
+
   return (
-      <View style={profileStyles.card}>
-      <Text style={profileStyles.sectionTitle}>
-        Business Details
-      </Text>
+    <View style={profileStyles.card}>
+      <Text style={profileStyles.sectionTitle}>Business Details</Text>
 
       {/* Editable Fields */}
       <Text style={profileStyles.label}>Owner Name</Text>
       <TextInput
         value={form.name}
-        onChangeText={(name) =>
-          setForm({ ...form, name })
-        }
+        onChangeText={(name) => setForm({ ...form, name })}
         style={profileStyles.input}
       />
 
-      <Text style={profileStyles.label}>
-        Business Name
-      </Text>
+      <Text style={profileStyles.label}>Business Name</Text>
       <TextInput
         value={form.business_name}
-        onChangeText={(business_name) =>
-          setForm({ ...form, business_name })
-        }
+        onChangeText={(business_name) => setForm({ ...form, business_name })}
         style={profileStyles.input}
       />
 
@@ -59,18 +55,10 @@ export function ProfileForm({ data, onSave, loading }: Props) {
       />
 
       {/* Availability */}
-      <AvailabilityToggle
-        value={form.is_available_today}
-        onChange={(v) =>
-          setForm({
-            ...form,
-            is_available_today: v,
-          })
-        }
-      />
+      <AvailabilityToggle value={form.is_available_today} />
 
       {/* Business Hours */}
-        <View style={profileStyles.timeRow}>
+      <View style={profileStyles.timeRow}>
         <View style={profileStyles.timeInputWrapper}>
           <TimePickerField
             label="Opening Time"
@@ -98,13 +86,10 @@ export function ProfileForm({ data, onSave, loading }: Props) {
         </View>
       </View>
 
-
       {/* Operating Days */}
       <OperatingDaysSelector
         value={form.operatingDays}
-        onChange={(days) =>
-          setForm({ ...form, operatingDays: days })
-        }
+        onChange={(days) => setForm({ ...form, operatingDays: days })}
       />
 
       <GradientButton

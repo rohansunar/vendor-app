@@ -4,7 +4,6 @@ export const dashboardStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8FAFF',
-    padding: 16,
   },
 
   headerTitle: {

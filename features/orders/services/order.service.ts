@@ -1,12 +1,11 @@
 import { apiClient } from '@/core/api/client';
 import { API_ENDPOINTS } from '@/core/api/endpoints';
-import { Order, OrdersResponse } from '../types';
+import { Order, OrdersResponse } from '../orders.types';
 
 export const orderService = {
-  getOrders(): Promise<OrdersResponse> {
-    return apiClient
-      .get(`${API_ENDPOINTS.VENDOR_ORDER}`)
-      .then((res) => res.data);
+  async getOrders(): Promise<OrdersResponse> {
+     const response = await apiClient.get(`${API_ENDPOINTS.VENDOR_ORDER}`);
+     return response.data;
   },
 
   getOrderById(id: string): Promise<Order> {

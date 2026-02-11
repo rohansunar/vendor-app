@@ -3,14 +3,18 @@ import { SectionHeader } from '@/features/dashboard/components/SectionHeader';
 import { StatCard } from '@/features/dashboard/components/StatCard';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Dashboard() {
+  const insets = useSafeAreaInsets();
   const { data, isLoading, isError, error, isRefetching, refetch } =
     useDashboard();
 
   if (isLoading) {
     return (
-      <View style={dashboardStyles.container}>
+      <View style={[dashboardStyles.container,
+        { justifyContent: 'center', alignItems: 'center' }
+      ]}>
         <Text>Loading dashboard…</Text>
       </View>
     );
@@ -53,11 +57,16 @@ export default function Dashboard() {
 
   return (
     <ScrollView
+      contentContainerStyle={{
+        padding: 16,
+        paddingBottom: 24 + insets.bottom, // 🔥 important
+      }}
       style={dashboardStyles.container}
       refreshControl={
         <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
       }
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
       <Text style={dashboardStyles.headerTitle}>Dashboard</Text>
 

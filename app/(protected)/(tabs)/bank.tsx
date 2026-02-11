@@ -6,39 +6,8 @@ import { ScrollView, Text, View } from 'react-native';
 import { useBankAccounts, useCreateBankAccount } from '@/features/bank';
 import { bankStyles } from '@/features/bank/components/bank.styles';
 import { BankForm } from '@/features/bank/components/BankForm';
-
-function InfoRow({ label, value }: any) {
-  return (
-    <View style={bankStyles.infoRow}>
-      <Text style={bankStyles.infoLabel}>{label}</Text>
-      <Text style={bankStyles.infoValue}>{value}</Text>
-    </View>
-  );
-}
-
-function StatusBadge({ label, active }: any) {
-  return (
-    <View
-      style={[
-        bankStyles.badge,
-        {
-          backgroundColor: active
-            ? '#DCFCE7'
-            : '#FEE2E2',
-        },
-      ]}
-    >
-      <Text
-        style={{
-          color: active ? '#16A34A' : '#DC2626',
-          fontWeight: '600',
-        }}
-      >
-        {label}: {active ? 'Yes' : 'No'}
-      </Text>
-    </View>
-  );
-}
+import { InfoRow } from '@/shared/ui/InfoRow';
+import { StatusBadge } from '@/shared/ui/StatusBadge';
 
 export default function BankScreen() {
   const navigation = useNavigation();

@@ -1,8 +1,9 @@
+import { FormField } from "@/shared/ui/FormField";
 import { GradientButton } from '@/shared/ui/GradientButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Text, TextInput, View } from 'react-native';
+import { useForm } from 'react-hook-form';
+import { Text, View } from 'react-native';
 import { BankFormValues, bankSchema } from '../bank.schema';
 import { bankStyles } from './bank.styles';
 
@@ -10,44 +11,6 @@ type Props = {
   onSubmit: (payload: any) => void;
   loading: boolean;
 };
-
-/* ---------- Reusable Field Component ---------- */
-function FormField({
-  control,
-  name,
-  placeholder,
-  error,
-  keyboardType,
-  autoCapitalize,
-}: any) {
-  return (
-    <View style={{ marginBottom: 14 }}>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            placeholder={placeholder}
-            value={value}
-            onChangeText={onChange}
-            keyboardType={keyboardType}
-            autoCapitalize={autoCapitalize}
-            style={[
-              bankStyles.input,
-              error && { borderColor: '#DC2626' },
-            ]}
-          />
-        )}
-      />
-
-      {error && (
-        <Text style={bankStyles.errorText}>
-          {error}
-        </Text>
-      )}
-    </View>
-  );
-}
 
 export function BankForm({ onSubmit, loading }: Props) {
   const {

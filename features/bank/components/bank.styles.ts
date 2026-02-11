@@ -42,36 +42,9 @@ export const bankStyles = StyleSheet.create({
     marginTop: 16,
   },
 
-  errorText: {
-    color: '#DC2626',
-    fontSize: 12,
-    marginTop: 4,
-  },
-
-  infoRow: {
-    marginBottom: 12,
-  },
-
-  infoLabel: {
-    fontSize: 12,
-    color: '#64748B',
-  },
-
-  infoValue: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#0F172A',
-  },
-
   badgeRow: {
     flexDirection: 'row',
     gap: 12,
     marginTop: 16,
-  },
-
-  badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
   },
 });

@@ -79,6 +79,13 @@ export default function TabsLayout() {
           headerTitle: 'Profile',
         }}
       />
+      <Tabs.Screen
+        name="bank"
+        options={{
+          href: null, // 👈 hides from bottom tab bar
+          headerTitle: 'Bank',
+        }}
+      />
     </Tabs>
   );
 }

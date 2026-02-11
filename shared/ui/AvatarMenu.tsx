@@ -78,7 +78,7 @@ export function AvatarMenu() {
             <MenuItem
               icon="credit-card"
               label="Bank Account"
-              onPress={() => navigate('/(protected)/bank')}
+              onPress={() => navigate('/(protected)/(tabs)/bank')}
             />
 
             <Divider />

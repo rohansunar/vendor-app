@@ -9,7 +9,7 @@ import { profileStyles } from './profile.styles';
 
 type Props = {
   data: VendorProfile;
-  onSave: (payload: Partial<VendorProfile>) => void;
+  onSave: (payload: VendorProfile) => void;
   loading: boolean;
 };
 

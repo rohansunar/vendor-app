@@ -1,12 +1,12 @@
 import { apiClient } from '@/core/api/client';
 import { API_ENDPOINTS } from '@/core/api/endpoints';
-import { BankAccount } from '../types';
+import { VendorBank } from '../bank.types';
 
 export const bankService = {
   /**
    * Get user's bank accounts
    */
-  async getBankAccounts(): Promise<BankAccount[]> {
+  async getBankAccounts(): Promise<VendorBank | []> {
     const response = await apiClient.get(API_ENDPOINTS.BANK);
     return response.data;
   },
@@ -36,12 +36,5 @@ export const bankService = {
     },
   ) {
     return apiClient.put(`${API_ENDPOINTS.BANK}/${id}`, data);
-  },
-
-  /**
-   * Delete bank account by ID
-   */
-  deleteBankAccount(id: string) {
-    return apiClient.delete(`${API_ENDPOINTS.BANK}/${id}`);
   },
 };

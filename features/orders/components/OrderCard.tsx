@@ -14,10 +14,7 @@ import { useRejectOrder } from '../hooks/useRejectOrder';
 import { useRiderAssignment } from '../hooks/useRiderAssignment';
 import { useOrdersSelection } from '../orders.context';
 import { Order } from '../orders.types';
-import {
-  getDeliveryColor,
-  getPaymentColor,
-} from '../orders.utils';
+import { getDeliveryColor, getPaymentColor } from '../orders.utils';
 import { CollapsibleReason } from './CollapsibleReason';
 import { DeliveryConfirmationModal } from './DeliveryConfirmationModal';
 import { OrderItemsSection } from './OrderItemsSection';
@@ -26,14 +23,11 @@ import { PaymentModeBadge } from './PaymentModeBadge';
 import { RejectionReasonModal } from './RejectionReasonModal';
 import { RiderSelectionModal } from './RiderSelectionModal';
 
-export function OrderCard({
-  order,
-}: {
-  order: Order;
-}) {
+export function OrderCard({ order }: { order: Order }) {
   const { selectedIds, toggleSelect, isSelectionMode } = useOrdersSelection();
   const { rejectOrder, isRejecting } = useRejectOrder();
-  const { assignRiders, isAssigning, revertAssignment, isReverting } = useRiderAssignment();
+  const { assignRiders, isAssigning, revertAssignment, isReverting } =
+    useRiderAssignment();
   const { markOutForDelivery, isMarkingOut } = useMarkOutForDelivery();
   const { confirmDelivery, isConfirming } = useConfirmDelivery();
 
@@ -63,11 +57,9 @@ export function OrderCard({
             }
           },
         },
-      ]
+      ],
     );
   };
-
-
 
   const handleReject = async (reason: string) => {
     try {
@@ -107,12 +99,19 @@ export function OrderCard({
     }
   };
 
-  const isLoading = isRejecting || isAssigning || isMarkingOut || isConfirming || isReverting;
-  const isHistorical = order.delivery_status === 'DELIVERED' || order.delivery_status === 'CANCELLED';
+  const isLoading =
+    isRejecting || isAssigning || isMarkingOut || isConfirming || isReverting;
+  const isHistorical =
+    order.delivery_status === 'DELIVERED' ||
+    order.delivery_status === 'CANCELLED';
 
   return (
     <TouchableOpacity
-      onPress={isSelectionMode && !isHistorical ? () => toggleSelect(order.id) : undefined}
+      onPress={
+        isSelectionMode && !isHistorical
+          ? () => toggleSelect(order.id)
+          : undefined
+      }
       activeOpacity={isSelectionMode && !isHistorical ? 0.7 : 1}
       style={[
         styles.cardContainer,
@@ -126,7 +125,9 @@ export function OrderCard({
       >
         {/* Selection Indicator */}
         {isSelectionMode && !isHistorical && (
-          <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
+          <View
+            style={[styles.checkbox, isSelected && styles.checkboxSelected]}
+          >
             {isSelected && <View style={styles.checkboxInner} />}
           </View>
         )}
@@ -148,7 +149,7 @@ export function OrderCard({
 
         {/* Address */}
         <Text style={styles.address}>
-          {order.address.address}, {order.address.pincode}, {' '}
+          {order.address.address}, {order.address.pincode},{' '}
           {order.address.location.name}, {order.address.location.state}
         </Text>
 
@@ -165,7 +166,9 @@ export function OrderCard({
         </View>
 
         {/* Payment Mode */}
-        <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center' }}>
+        <View
+          style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center' }}
+        >
           <PaymentModeBadge mode={order.payment_mode} />
           {order.rider && (
             <View style={styles.riderInfo}>

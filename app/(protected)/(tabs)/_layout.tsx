@@ -86,6 +86,20 @@ export default function TabsLayout() {
           headerTitle: 'Bank',
         }}
       />
+      <Tabs.Screen
+        name="products/create"
+        options={{
+          href: null, // 👈 hides from bottom tab bar
+          headerTitle: 'products/create',
+        }}
+      />
+      <Tabs.Screen
+        name="products/[id]"
+        options={{
+          href: null, // 👈 hides from bottom tab bar
+          headerTitle: 'products/[id]',
+        }}
+      />
     </Tabs>
   );
 }

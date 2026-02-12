@@ -1,4 +1,3 @@
-
 import {
   OrdersSelectionProvider,
   RiderSelectionModal,
@@ -19,13 +18,23 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-function TabButton({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function TabButton({
+  label,
+  active,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+}) {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.tabButton, active && styles.tabButtonActive]}
     >
-      <Text style={[styles.tabButtonText, active && styles.tabButtonTextActive]}>
+      <Text
+        style={[styles.tabButtonText, active && styles.tabButtonTextActive]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -47,7 +56,11 @@ function OrdersScreenContent() {
     return data.orders.filter((order) => {
       const status = order.delivery_status;
       if (activeTab === 'ACTIVE') {
-        return status === 'PENDING' || status === 'OUT_FOR_DELIVERY' || status === 'CONFIRMED';
+        return (
+          status === 'PENDING' ||
+          status === 'OUT_FOR_DELIVERY' ||
+          status === 'CONFIRMED'
+        );
       } else {
         return status === 'DELIVERED' || status === 'CANCELLED';
       }
@@ -106,7 +119,9 @@ function OrdersScreenContent() {
 
       <View style={styles.header}>
         <View>
-          <Text style={styles.totalOrders}>Showing: {filteredOrders.length} orders</Text>
+          <Text style={styles.totalOrders}>
+            Showing: {filteredOrders.length} orders
+          </Text>
           {isSelectionMode && (
             <Text style={styles.selectedCount}>
               {selectedIds.length} orders selected
@@ -143,9 +158,7 @@ function OrdersScreenContent() {
       <FlatList
         data={filteredOrders}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <OrderCard order={item} />
-        )}
+        renderItem={({ item }) => <OrderCard order={item} />}
         contentContainerStyle={{
           padding: 16,
           paddingBottom: 20 + insets.bottom + (isSelectionMode ? 80 : 0),

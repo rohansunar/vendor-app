@@ -32,7 +32,10 @@ export function ProductImageManager({ productId, images }: Props) {
   async function handlePickImages() {
     const remainingSlots = MAX_IMAGES - images.length;
     if (remainingSlots <= 0) {
-      Alert.alert('Limit reached', `You can upload up to ${MAX_IMAGES} images.`);
+      Alert.alert(
+        'Limit reached',
+        `You can upload up to ${MAX_IMAGES} images.`,
+      );
       return;
     }
 
@@ -45,7 +48,10 @@ export function ProductImageManager({ productId, images }: Props) {
     if (!result.canceled) {
       const selectedAssets = result.assets.slice(0, remainingSlots);
       if (result.assets.length > remainingSlots) {
-        Alert.alert('Image limit', `Only ${remainingSlots} more images can be added.`);
+        Alert.alert(
+          'Image limit',
+          `Only ${remainingSlots} more images can be added.`,
+        );
       }
 
       const formData = buildImageFormData(selectedAssets);
@@ -57,7 +63,11 @@ export function ProductImageManager({ productId, images }: Props) {
         },
         {
           onSettled: () => setUploadProgress(null),
-          onError: () => Alert.alert('Upload failed', 'There was an error uploading your images.'),
+          onError: () =>
+            Alert.alert(
+              'Upload failed',
+              'There was an error uploading your images.',
+            ),
         },
       );
     }
@@ -84,7 +94,10 @@ export function ProductImageManager({ productId, images }: Props) {
           </Text>
         </View>
         <TouchableOpacity
-          style={[styles.addButton, images.length >= MAX_IMAGES && styles.addButtonDisabled]}
+          style={[
+            styles.addButton,
+            images.length >= MAX_IMAGES && styles.addButtonDisabled,
+          ]}
           onPress={handlePickImages}
           disabled={images.length >= MAX_IMAGES || uploadMutation.isPending}
         >
@@ -102,7 +115,9 @@ export function ProductImageManager({ productId, images }: Props) {
             <ActivityIndicator color="#2563EB" />
             <Text style={styles.progressText}>Uploading {uploadProgress}%</Text>
             <View style={styles.progressTrack}>
-              <View style={[styles.progressBar, { width: `${uploadProgress}%` }]} />
+              <View
+                style={[styles.progressBar, { width: `${uploadProgress}%` }]}
+              />
             </View>
           </View>
         </View>
@@ -118,7 +133,9 @@ export function ProductImageManager({ productId, images }: Props) {
             <Feather name="image" size={32} color="#94A3B8" />
           </View>
           <Text style={styles.emptyText}>Add your first image</Text>
-          <Text style={styles.emptySubtext}>Show off your product with up to 5 photos</Text>
+          <Text style={styles.emptySubtext}>
+            Show off your product with up to 5 photos
+          </Text>
         </TouchableOpacity>
       ) : (
         <View style={styles.listContainer}>
@@ -129,7 +146,9 @@ export function ProductImageManager({ productId, images }: Props) {
             showsHorizontalScrollIndicator={false}
             onDragEnd={({ data }) => reorderMutation.mutate(data)}
             renderItem={({ item, drag, isActive }) => (
-              <View style={[styles.imageCard, isActive && styles.activeImageCard]}>
+              <View
+                style={[styles.imageCard, isActive && styles.activeImageCard]}
+              >
                 <TouchableOpacity
                   onLongPress={drag}
                   activeOpacity={0.9}

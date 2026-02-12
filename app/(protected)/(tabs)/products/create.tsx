@@ -4,26 +4,26 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 export default function CreateProductPage() {
-    const { mutate, isPending } = useCreateProduct();
+  const { mutate, isPending } = useCreateProduct();
 
-    const handleSubmit = (data: any) => {
-        mutate(data, {
-            onSuccess: () => {
-                router.back();
-            },
-        });
-    };
+  const handleSubmit = (data: any) => {
+    mutate(data, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
+  };
 
-    return (
-        <View style={styles.container}>
-            <ProductForm onSubmit={handleSubmit} isPending={isPending} />
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <ProductForm onSubmit={handleSubmit} isPending={isPending} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8FAFF',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#F8FAFF',
+  },
 });

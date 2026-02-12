@@ -39,7 +39,9 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
   const [deposit, setDeposit] = useState(product?.deposit?.toString() ?? '');
   const [categoryId, setCategoryId] = useState(product?.categoryId ?? '');
   const [isActive, setIsActive] = useState(product?.is_active ?? true);
-  const [isSchedulable, setIsSchedulable] = useState(product?.is_schedulable ?? false);
+  const [isSchedulable, setIsSchedulable] = useState(
+    product?.is_schedulable ?? false,
+  );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -54,7 +56,8 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
   function validate() {
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = 'Name is required';
-    if (!price.trim() || isNaN(Number(price))) newErrors.price = 'Valid price is required';
+    if (!price.trim() || isNaN(Number(price)))
+      newErrors.price = 'Valid price is required';
     if (!categoryId) newErrors.category = 'Category is required';
 
     setErrors(newErrors);
@@ -85,12 +88,16 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
     <View style={styles.inputGroup}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={[styles.input, options.error && styles.inputError, options.multiline && styles.textArea]}
+        style={[
+          styles.input,
+          options.error && styles.inputError,
+          options.multiline && styles.textArea,
+        ]}
         value={value}
         onChangeText={(text) => {
           onChangeText(text);
           if (options.errorKey) {
-            setErrors(prev => ({ ...prev, [options.errorKey]: '' }));
+            setErrors((prev) => ({ ...prev, [options.errorKey]: '' }));
           }
         }}
         placeholder={placeholder}
@@ -115,33 +122,48 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Basic Information</Text>
 
           {renderInput('Product Name *', name, setName, 'e.g. 20L Water Jar', {
             error: errors.name,
-            errorKey: 'name'
+            errorKey: 'name',
           })}
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Category *</Text>
-            <View style={[styles.pickerContainer, errors.category && styles.inputError]}>
+            <View
+              style={[
+                styles.pickerContainer,
+                errors.category && styles.inputError,
+              ]}
+            >
               <Picker
                 selectedValue={categoryId}
                 onValueChange={(val) => {
                   setCategoryId(val);
-                  setErrors(prev => ({ ...prev, category: '' }));
+                  setErrors((prev) => ({ ...prev, category: '' }));
                 }}
                 style={styles.picker}
               >
                 <Picker.Item label="Select category" value="" color="#94A3B8" />
                 {categories?.map((cat) => (
-                  <Picker.Item key={cat.id} label={cat.name} value={cat.id} color="#0F172A" />
+                  <Picker.Item
+                    key={cat.id}
+                    label={cat.name}
+                    value={cat.id}
+                    color="#0F172A"
+                  />
                 ))}
               </Picker>
             </View>
-            {errors.category && <Text style={styles.errorText}>{errors.category}</Text>}
+            {errors.category && (
+              <Text style={styles.errorText}>{errors.category}</Text>
+            )}
           </View>
 
           <View style={styles.row}>
@@ -149,12 +171,12 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
               {renderInput('Price (₹) *', price, setPrice, '0.00', {
                 keyboardType: 'numeric',
                 error: errors.price,
-                errorKey: 'price'
+                errorKey: 'price',
               })}
             </View>
             <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
               {renderInput('Deposit (₹)', deposit, setDeposit, '0.00', {
-                keyboardType: 'numeric'
+                keyboardType: 'numeric',
               })}
             </View>
           </View>
@@ -162,11 +184,17 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Details</Text>
-          {renderInput('Description', description, setDescription, 'Tell us more about the product...', {
-            multiline: true,
-            numberOfLines: 4,
-            textAlignVertical: 'top'
-          })}
+          {renderInput(
+            'Description',
+            description,
+            setDescription,
+            'Tell us more about the product...',
+            {
+              multiline: true,
+              numberOfLines: 4,
+              textAlignVertical: 'top',
+            },
+          )}
         </View>
 
         <View style={styles.section}>
@@ -175,7 +203,9 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
           <View style={styles.switchRow}>
             <View>
               <Text style={styles.switchLabel}>Active Status</Text>
-              <Text style={styles.switchSubLabel}>Allow customers to see this product</Text>
+              <Text style={styles.switchSubLabel}>
+                Allow customers to see this product
+              </Text>
             </View>
             <Switch
               value={isActive}
@@ -185,10 +215,17 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
             />
           </View>
 
-          <View style={[styles.switchRow, { borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 16 }]}>
+          <View
+            style={[
+              styles.switchRow,
+              { borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 16 },
+            ]}
+          >
             <View>
               <Text style={styles.switchLabel}>Schedulable</Text>
-              <Text style={styles.switchSubLabel}>Enable subscription/scheduled orders</Text>
+              <Text style={styles.switchSubLabel}>
+                Enable subscription/scheduled orders
+              </Text>
             </View>
             <Switch
               value={isSchedulable}
@@ -208,7 +245,12 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
             <ActivityIndicator color="#FFFFFF" />
           ) : (
             <>
-              <Feather name="check" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+              <Feather
+                name="check"
+                size={20}
+                color="#FFFFFF"
+                style={{ marginRight: 8 }}
+              />
               <Text style={styles.saveText}>
                 {product ? 'Update Product' : 'Create Product'}
               </Text>

@@ -35,7 +35,9 @@ export const orderService = {
         riderId,
       });
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to assign rider(s)');
+      throw new Error(
+        error.response?.data?.message || 'Failed to assign rider(s)',
+      );
     }
   },
 
@@ -60,9 +62,13 @@ export const orderService = {
       throw new Error('Order ID is required');
     }
     try {
-      await apiClient.post(`${API_ENDPOINTS.VENDOR_ORDER}/${id}/revert-assignment`);
+      await apiClient.post(
+        `${API_ENDPOINTS.VENDOR_ORDER}/${id}/revert-assignment`,
+      );
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to revert rider assignment');
+      throw new Error(
+        error.response?.data?.message || 'Failed to revert rider assignment',
+      );
     }
   },
 };

@@ -1,3 +1,12 @@
+export type OrderItem = {
+  id: string;
+  price: string;
+  quantity: number;
+  product: {
+    name: string;
+  };
+};
+
 export type Order = {
   id: string;
   orderNo: string;
@@ -7,12 +16,25 @@ export type Order = {
   delivery_status: string;
   created_at: string;
   assigned_rider_phone: string | null;
-  otp_verified: boolean;
+  orderItems: OrderItem[];
   address: {
-    label: string;
     address: string;
     pincode: string;
+    location: {
+      name: string;
+      state: string;
+    };
   };
+
+  rejection_reason?: string;
+  rider?: {
+    id: string;
+    name: string;
+    phone: string;
+  };
+  confirmation_method?: 'OTP' | 'PHOTO';
+  confirmation_otp?: string;
+  confirmation_image?: string;
 };
 
 export type OrdersResponse = {

@@ -21,16 +21,11 @@ export function FormField({
             onChangeText={onChange}
             keyboardType={keyboardType}
             autoCapitalize={autoCapitalize}
-            style={[
-              styles.input,
-              error && { borderColor: '#DC2626' },
-            ]}
+            style={[styles.input, error && { borderColor: '#DC2626' }]}
           />
         )}
       />
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 }

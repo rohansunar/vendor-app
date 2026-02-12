@@ -37,51 +37,31 @@ export default function BankScreen() {
   const isBankData = data && !Array.isArray(data);
 
   return (
-      <ScrollView
-        style={bankStyles.container}
-        contentContainerStyle={bankStyles.scrollContent}
-      >
-        {isBankData ? (
-         <View style={bankStyles.card}>
-          <Text style={bankStyles.sectionTitle}>
-            Bank Information
-          </Text>
-  
-          <InfoRow
-            label="Account Holder"
-            value={data.accountHolderName}
-          />
-          <InfoRow
-            label="Bank Name"
-            value={data.bankName}
-          />
+    <ScrollView
+      style={bankStyles.container}
+      contentContainerStyle={bankStyles.scrollContent}
+    >
+      {isBankData ? (
+        <View style={bankStyles.card}>
+          <Text style={bankStyles.sectionTitle}>Bank Information</Text>
+
+          <InfoRow label="Account Holder" value={data.accountHolderName} />
+          <InfoRow label="Bank Name" value={data.bankName} />
           <InfoRow
             label="Account Number"
             value={`****${data.accountNumber.slice(-4)}`}
           />
-          <InfoRow
-            label="IFSC Code"
-            value={data.ifscCode}
-          />
-          <InfoRow
-            label="UPI ID"
-            value={data.upiId || 'Not provided'}
-          />
-  
+          <InfoRow label="IFSC Code" value={data.ifscCode} />
+          <InfoRow label="UPI ID" value={data.upiId || 'Not provided'} />
+
           <View style={bankStyles.badgeRow}>
-            <StatusBadge
-              label="Verified"
-              active={data.isVerified}
-            />
-            <StatusBadge
-              label="Default"
-              active={data.isDefault}
-            />
+            <StatusBadge label="Verified" active={data.isVerified} />
+            <StatusBadge label="Default" active={data.isDefault} />
           </View>
-         </View>
-        ) : (
-          <BankForm loading={createBank.isPending} onSubmit={createBank.mutate} />
-        )}
-      </ScrollView>
-    );
-  }
+        </View>
+      ) : (
+        <BankForm loading={createBank.isPending} onSubmit={createBank.mutate} />
+      )}
+    </ScrollView>
+  );
+}

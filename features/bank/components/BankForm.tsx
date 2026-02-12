@@ -1,4 +1,4 @@
-import { FormField } from "@/shared/ui/FormField";
+import { FormField } from '@/shared/ui/FormField';
 import { GradientButton } from '@/shared/ui/GradientButton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
@@ -32,14 +32,14 @@ export function BankForm({ onSubmit, loading }: Props) {
     <View style={bankStyles.card}>
       <Text style={bankStyles.sectionTitle}>Add Bank Details</Text>
 
-       {/* Account Holder */}
+      {/* Account Holder */}
       <FormField
         control={control}
         name="accountHolderName"
         placeholder="Account Holder Name"
         error={errors.accountHolderName?.message}
       />
-      
+
       {/* Account Number */}
       <FormField
         control={control}

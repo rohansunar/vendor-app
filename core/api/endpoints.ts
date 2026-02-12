@@ -11,4 +11,5 @@ export const API_ENDPOINTS = {
   CATEGORIES: '/categories',
   VENDOR_ORDER: '/vendor/orders',
   DASHBOARD: '/vendors/dashboard',
+  RIDERS: '/riders',
 };

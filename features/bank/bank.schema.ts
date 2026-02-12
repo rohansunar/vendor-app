@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
 export const bankSchema = z.object({
-  accountHolderName: z
-    .string()
-    .min(2, 'Account holder name is required'),
+  accountHolderName: z.string().min(2, 'Account holder name is required'),
 
   accountNumber: z
     .string()
@@ -11,25 +9,16 @@ export const bankSchema = z.object({
 
   ifscCode: z
     .string()
-    .regex(
-      /^[A-Z]{4}0[A-Z0-9]{6}$/,
-      'Invalid IFSC code format'
-    ),
+    .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, 'Invalid IFSC code format'),
 
-  bankName: z
-    .string()
-    .min(2, 'Bank name is required'),
+  bankName: z.string().min(2, 'Bank name is required'),
 
   upiId: z
     .string()
     .optional()
-    .refine(
-      (val) =>
-        !val || /^[\w.-]+@[\w.-]+$/.test(val),
-      {
-        message: 'Invalid UPI ID',
-      }
-    ),
+    .refine((val) => !val || /^[\w.-]+@[\w.-]+$/.test(val), {
+      message: 'Invalid UPI ID',
+    }),
 });
 
 export type BankFormValues = z.infer<typeof bankSchema>;

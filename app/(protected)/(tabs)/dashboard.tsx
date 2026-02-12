@@ -12,9 +12,12 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <View style={[dashboardStyles.container,
-        { justifyContent: 'center', alignItems: 'center' }
-      ]}>
+      <View
+        style={[
+          dashboardStyles.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
         <Text>Loading dashboard…</Text>
       </View>
     );

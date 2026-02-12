@@ -13,9 +13,7 @@ export function StatusBadge({
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 12,
-        backgroundColor: active
-          ? '#DCFCE7'
-          : '#FEE2E2',
+        backgroundColor: active ? '#DCFCE7' : '#FEE2E2',
       }}
     >
       <Text

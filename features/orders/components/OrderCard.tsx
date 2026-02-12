@@ -18,6 +18,7 @@ import {
   getDeliveryColor,
   getPaymentColor,
 } from '../orders.utils';
+import { CollapsibleReason } from './CollapsibleReason';
 import { DeliveryConfirmationModal } from './DeliveryConfirmationModal';
 import { OrderItemsSection } from './OrderItemsSection';
 import { OrderStatusBadge } from './OrderStatusBadge';
@@ -32,7 +33,7 @@ export function OrderCard({
 }) {
   const { selectedIds, toggleSelect, isSelectionMode } = useOrdersSelection();
   const { rejectOrder, isRejecting } = useRejectOrder();
-  const { assignRiders, isAssigning } = useRiderAssignment();
+  const { assignRiders, isAssigning, revertAssignment, isReverting } = useRiderAssignment();
   const { markOutForDelivery, isMarkingOut } = useMarkOutForDelivery();
   const { confirmDelivery, isConfirming } = useConfirmDelivery();
 
@@ -44,6 +45,27 @@ export function OrderCard({
   const deliveryColor = getDeliveryColor(order.delivery_status);
   const isSelected = selectedIds.includes(order.id);
   const isCOD = order.payment_mode === 'COD';
+
+  const handleRevertAssignment = async () => {
+    Alert.alert(
+      'Revert Assignment',
+      'Are you sure you want to unassign this rider?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Revert',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await revertAssignment(order.id);
+            } catch (error) {
+              Alert.alert('Error', 'Failed to revert rider assignment');
+            }
+          },
+        },
+      ]
+    );
+  };
 
 
 
@@ -85,12 +107,13 @@ export function OrderCard({
     }
   };
 
-  const isLoading = isRejecting || isAssigning || isMarkingOut || isConfirming;
+  const isLoading = isRejecting || isAssigning || isMarkingOut || isConfirming || isReverting;
+  const isHistorical = order.delivery_status === 'DELIVERED' || order.delivery_status === 'CANCELLED';
 
   return (
     <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={() => isSelectionMode && toggleSelect(order.id)}
+      onPress={isSelectionMode && !isHistorical ? () => toggleSelect(order.id) : undefined}
+      activeOpacity={isSelectionMode && !isHistorical ? 0.7 : 1}
       style={[
         styles.cardContainer,
         isSelected && styles.selectedCard,
@@ -102,7 +125,7 @@ export function OrderCard({
         style={styles.card}
       >
         {/* Selection Indicator */}
-        {isSelectionMode && (
+        {isSelectionMode && !isHistorical && (
           <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
             {isSelected && <View style={styles.checkboxInner} />}
           </View>
@@ -147,6 +170,17 @@ export function OrderCard({
           {order.rider && (
             <View style={styles.riderInfo}>
               <Text style={styles.riderLabel}>Rider: {order.rider.name}</Text>
+              <TouchableOpacity
+                style={styles.revertButton}
+                onPress={() => handleRevertAssignment()}
+                disabled={isReverting}
+              >
+                {isReverting ? (
+                  <ActivityIndicator size="small" color="#EF4444" />
+                ) : (
+                  <Text style={styles.revertButtonText}>✕</Text>
+                )}
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -154,12 +188,23 @@ export function OrderCard({
         {/* Order Items */}
         <OrderItemsSection items={order.orderItems ?? []} />
 
+        {/* Cancellation Details */}
+        {order.delivery_status === 'CANCELLED' && order.cancelReason && (
+          <CollapsibleReason
+            title="Cancellation Reason"
+            content={order.cancelReason}
+            timestamp={order.cancelledAt}
+          />
+        )}
+
         <View style={styles.footer}>
           <Text style={styles.date}>
-            {new Date(order.created_at).toLocaleDateString([], {
+            {new Date(order.created_at).toLocaleString([], {
               day: 'numeric',
               month: 'short',
               year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
             })}
           </Text>
 
@@ -334,11 +379,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#DBEAFE',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   riderLabel: {
     fontSize: 12,
     color: '#1D4ED8',
     fontWeight: '600',
+  },
+  revertButton: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#FEE2E2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#FECACA',
+  },
+  revertButtonText: {
+    fontSize: 10,
+    color: '#EF4444',
+    fontWeight: 'bold',
   },
   footer: {
     marginTop: 20,

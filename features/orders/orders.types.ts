@@ -26,7 +26,8 @@ export type Order = {
     };
   };
 
-  rejection_reason?: string;
+  cancelReason?: string | null;
+  cancelledAt?: string | null;
   rider?: {
     id: string;
     name: string;

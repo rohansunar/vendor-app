@@ -54,4 +54,15 @@ export const orderService = {
       data,
     );
   },
+
+  async revertAssignment(id: string): Promise<void> {
+    if (!id) {
+      throw new Error('Order ID is required');
+    }
+    try {
+      await apiClient.post(`${API_ENDPOINTS.VENDOR_ORDER}/${id}/revert-assignment`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to revert rider assignment');
+    }
+  },
 };

@@ -34,12 +34,22 @@ export function useRiderAssignment() {
         },
     });
 
+    // Mutation for rider assignment reversal
+    const revertMutation = useMutation({
+        mutationFn: (id: string) => orderService.revertAssignment(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['orders'] });
+        },
+    });
+
     return {
         riders,
         isLoadingRiders,
         ridersError,
         assignRiders: mutation.mutateAsync,
         isAssigning: mutation.isPending,
-        mutationError: mutation.error,
+        revertAssignment: revertMutation.mutateAsync,
+        isReverting: revertMutation.isPending,
+        mutationError: mutation.error || revertMutation.error,
     };
 }

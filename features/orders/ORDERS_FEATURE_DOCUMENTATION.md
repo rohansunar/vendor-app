@@ -7,6 +7,8 @@ This document describes the newly implemented features for the Orders module in 
 1.  **Enhanced Order List View**:
     *   **Distance Indicator**: Shows the delivery distance from the vendor to the customer.
     *   **Order Rejection**: Vendors can reject orders with specific reasons.
+    *   **Active & History Tabs**: Orders are separated into "Active" (Pending, Out For Delivery, Confirmed) and "History" (Delivered, Cancelled) for better organization.
+    *   **Disabled Historical Actions**: Actions and multi-selection are disabled for historical orders to prevent accidental operations.
 2.  **Rider Assignment System**:
     *   **Single Assignment**: Assign a rider to an individual order.
     *   **Bulk Assignment**: Select multiple orders and assign a rider in one go using the multi-select mode.
@@ -53,4 +55,5 @@ This document describes the newly implemented features for the Orders module in 
 *   **Adding Rejection Reasons**: Modify the `REJECTION_REASONS` constant in `RejectionReasonModal.tsx`.
 *   **Modifying COD Indication**: Adjust the styles `codCard` and `codBadge` in `OrderCard.tsx`.
 *   **New Confirmation Methods**: Update the `DeliveryConfirmationModal.tsx` and the `Order` type's `confirmation_method` field.
-*   **External Rider System**: Replace the mock riders in `RiderSelectionModal.tsx` with a call to a `useRiders` hook.
+*   **Rider System**: The system now fetches real-time rider data from the `/riders` endpoint via the `useRiderAssignment` hook.
+*   **Assignment Reversal**: Vendors can unassign a rider by clicking the "✕" button next to the rider's name on the order card. This triggers a confirmation dialog before calling the `revert-assignment` endpoint.

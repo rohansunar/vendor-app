@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { productImageService } from '../services/productImageService';
+import { productImageService } from '../services/productImage.service';
 
 export function useUploadProductImages(productId: string) {
   const queryClient = useQueryClient();

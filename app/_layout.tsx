@@ -4,6 +4,7 @@ import { toastConfig } from '@/core/ui/toastConfig';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
@@ -30,9 +31,11 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <AppProvider>
-      <RootNavigator />
-      <Toast config={toastConfig} position="top" />
-    </AppProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppProvider>
+        <RootNavigator />
+        <Toast config={toastConfig} position="top" />
+      </AppProvider>
+    </GestureHandlerRootView>
   );
 }

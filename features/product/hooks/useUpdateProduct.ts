@@ -1,6 +1,6 @@
 // Update Product
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { productService } from '../services/productService';
+import { productService } from '../services/product.service';
 
 export function useUpdateProduct() {
   const queryClient = useQueryClient();

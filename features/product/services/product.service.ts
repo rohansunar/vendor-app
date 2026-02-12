@@ -1,6 +1,6 @@
 import { apiClient } from '@/core/api/client';
 import { API_ENDPOINTS } from '@/core/api/endpoints';
-import { Product } from '../types';
+import { Product } from '../product.types';
 
 export const productService = {
   getProducts(): Promise<Product[]> {
@@ -17,7 +17,10 @@ export const productService = {
     name: string;
     description?: string;
     price: number;
+    deposit?: number;
     categoryId: string;
+    is_schedulable: boolean;
+    is_active?: boolean;
   }) {
     return apiClient.post(API_ENDPOINTS.PRODUCT, data);
   },
@@ -28,7 +31,9 @@ export const productService = {
       name: string;
       description?: string;
       price: number;
+      deposit?: number;
       is_active: boolean;
+      is_schedulable: boolean;
       categoryId: string;
     },
   ) {

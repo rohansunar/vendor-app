@@ -1,6 +1,6 @@
 // Product list
 import { useQuery } from '@tanstack/react-query';
-import { productService } from '../services/productService';
+import { productService } from '../services/product.service';
 
 export function useProducts() {
   return useQuery({

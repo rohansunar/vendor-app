@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addressService } from '../';
+import { addressService } from '../services/address.service';
 
 export function useCreateAddress() {
   const queryClient = useQueryClient();

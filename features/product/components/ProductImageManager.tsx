@@ -30,6 +30,12 @@ export function ProductImageManager({ productId, images }: Props) {
   const reorderMutation = useReorderProductImages(productId);
 
   async function handlePickImages() {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      throw new Error('Permission denied');
+    }
+    
     const remainingSlots = MAX_IMAGES - images.length;
     if (remainingSlots <= 0) {
       Alert.alert(
@@ -41,7 +47,7 @@ export function ProductImageManager({ productId, images }: Props) {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsMultipleSelection: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       quality: 0.8,
     });
 

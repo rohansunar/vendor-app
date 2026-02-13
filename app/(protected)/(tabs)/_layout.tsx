@@ -17,8 +17,6 @@ export default function TabsLayout() {
         headerTitleStyle: {
           fontWeight: '700',
         },
-        headerTitle: () => <AddressHeader />,
-        headerRight: () => <AvatarMenu />,
         tabBarActiveTintColor: '#2563EB',
         tabBarInactiveTintColor: '#94A3B8',
         tabBarStyle: {
@@ -37,7 +35,8 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
+          headerTitle: () => <AddressHeader />,
+          headerRight: () => <AvatarMenu />,
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),

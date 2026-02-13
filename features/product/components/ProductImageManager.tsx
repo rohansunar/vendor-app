@@ -35,7 +35,7 @@ export function ProductImageManager({ productId, images }: Props) {
     if (!permission.granted) {
       throw new Error('Permission denied');
     }
-    
+
     const remainingSlots = MAX_IMAGES - images.length;
     if (remainingSlots <= 0) {
       Alert.alert(

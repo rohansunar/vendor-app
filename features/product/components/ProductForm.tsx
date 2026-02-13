@@ -11,7 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
 } from 'react-native';
 import { Product } from '../product.types';
 
@@ -85,7 +85,9 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
     });
   }
 
-  const selectedCategoryName = categories?.find((c) => c.id === categoryId)?.name;
+  const selectedCategoryName = categories?.find(
+    (c) => c.id === categoryId,
+  )?.name;
 
   const renderInput = (
     label: string,
@@ -135,14 +137,16 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Category *</Text>
           <TouchableOpacity
-            style={[
-              styles.customPicker,
-              errors.category && styles.inputError,
-            ]}
+            style={[styles.customPicker, errors.category && styles.inputError]}
             onPress={() => setIsPickerVisible(true)}
             activeOpacity={0.7}
           >
-            <Text style={[styles.pickerValue, !selectedCategoryName && styles.placeholderText]}>
+            <Text
+              style={[
+                styles.pickerValue,
+                !selectedCategoryName && styles.placeholderText,
+              ]}
+            >
               {selectedCategoryName || 'Select category'}
             </Text>
             <Feather name="chevron-down" size={20} color="#94A3B8" />
@@ -194,9 +198,7 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
         <View style={styles.switchRow}>
           <View style={{ flex: 1 }}>
             <Text style={styles.switchLabel}>Active Status</Text>
-            <Text style={styles.switchSubLabel}>
-              Visible to customers
-            </Text>
+            <Text style={styles.switchSubLabel}>Visible to customers</Text>
           </View>
           <Switch
             value={isActive}
@@ -214,9 +216,7 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
         >
           <View style={{ flex: 1 }}>
             <Text style={styles.switchLabel}>Schedulable</Text>
-            <Text style={styles.switchSubLabel}>
-              Subscription enabled
-            </Text>
+            <Text style={styles.switchSubLabel}>Subscription enabled</Text>
           </View>
           <Switch
             value={isSchedulable}
@@ -280,10 +280,12 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
                         setIsPickerVisible(false);
                       }}
                     >
-                      <Text style={[
-                        styles.categoryText,
-                        categoryId === cat.id && styles.categoryTextActive,
-                      ]}>
+                      <Text
+                        style={[
+                          styles.categoryText,
+                          categoryId === cat.id && styles.categoryTextActive,
+                        ]}
+                      >
                         {cat.name}
                       </Text>
                       {categoryId === cat.id && (

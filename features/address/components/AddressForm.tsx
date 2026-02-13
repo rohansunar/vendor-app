@@ -12,6 +12,8 @@ import {
   View,
 } from 'react-native';
 import { AddressFormData, AddressFormProps } from '../address.types';
+import { useLocationLogic } from '../hooks/useLocationLogic';
+import { MapComponent } from './MapComponent';
 
 /**
  * AddressForm component for updating delivery address.
@@ -24,29 +26,95 @@ export function AddressForm({
   onCancel,
   isPending,
 }: AddressFormProps) {
+  const {
+    location,
+    addressDetails,
+    loading: locationLoading,
+    requestPermissionAndGetCurrentLocation,
+    reverseGeocode,
+    setLocation,
+  } = useLocationLogic();
+
   const [formData, setFormData] = useState<AddressFormData>({
     pincode: address?.pincode || '',
     address: address?.address || '',
     city: address?.location?.name || '',
     state: address?.location?.state || '',
-    lat: '12.9716', // Mock latitude value as per requirements
-    lng: '77.5946', // Mock longitude value as per requirements
+    lat: '',
+    lng: '',
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof AddressFormData, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof AddressFormData, string>>
+  >({});
 
+  // Initialize form with address data if available
   useEffect(() => {
     if (address) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         pincode: address.pincode,
         address: address.address,
         city: address.location?.name || '',
         state: address.location?.state || '',
-        lat: '12.9716',
-        lng: '77.5946',
+        // Keep existing lat/lng or default to empty if not present (since backend doesn't support it yet)
+        lat: prev.lat || '',
+        lng: prev.lng || '',
+      }));
+
+      // If we don't have coordinates, we could try to geocode the address or just get current location
+      // For now, let's try to get current location if lat/lng are empty to give a better UX
+      if (!formData.lat || !formData.lng) {
+        requestPermissionAndGetCurrentLocation().then((loc) => {
+          if (loc) {
+            setFormData((prev) => ({
+              ...prev,
+              lat: loc.latitude.toString(),
+              lng: loc.longitude.toString(),
+            }));
+          }
+        });
+      }
+    } else {
+      // If no address provided (new/empty), try to get current location
+      requestPermissionAndGetCurrentLocation().then((loc) => {
+        if (loc) {
+          setFormData((prev) => ({
+            ...prev,
+            lat: loc.latitude.toString(),
+            lng: loc.longitude.toString(),
+          }));
+        }
       });
     }
   }, [address]);
+
+  // Update form when address details from geocoding change
+  useEffect(() => {
+    if (addressDetails.city || addressDetails.state || addressDetails.pincode) {
+      setFormData((prev) => ({
+        ...prev,
+        city: addressDetails.city || prev.city,
+        state: addressDetails.state || prev.state,
+        pincode: addressDetails.pincode || prev.pincode,
+      }));
+    }
+  }, [addressDetails]);
+
+  const handleLocationSelect = async (lat: number, lng: number) => {
+    // 1. Update coordinates immediately for responsive UI
+    setFormData((prev) => ({
+      ...prev,
+      lat: lat.toString(),
+      lng: lng.toString(),
+    }));
+
+    // 2. Update internal location state
+    setLocation({ latitude: lat, longitude: lng });
+
+    // 3. Trigger reverse geocoding to auto-fill address details
+    await reverseGeocode(lat, lng);
+  };
 
   /**
    * Validates form inputs according to requirements.
@@ -74,7 +142,7 @@ export function AddressForm({
   };
 
   /**
-   * Handles form submission with mocked coordinates.
+   * Handles form submission with coordinates.
    */
   const handleSave = () => {
     try {
@@ -83,7 +151,10 @@ export function AddressForm({
       }
     } catch (error) {
       // Structured logging as per requirements
-      console.error(`[AddressForm] Submission error at ${new Date().toISOString()}:`, error);
+      console.error(
+        `[AddressForm] Submission error at ${new Date().toISOString()}:`,
+        error,
+      );
     }
   };
 
@@ -97,7 +168,11 @@ export function AddressForm({
         <View style={styles.headerIndicator} />
         <View style={styles.headerRow}>
           <Text style={styles.title}>Update Address Details</Text>
-          <TouchableOpacity onPress={onCancel} style={styles.closeButton} accessibilityLabel="Close form">
+          <TouchableOpacity
+            onPress={onCancel}
+            style={styles.closeButton}
+            accessibilityLabel="Close form"
+          >
             <Ionicons name="close" size={24} color="#374151" />
           </TouchableOpacity>
         </View>
@@ -108,36 +183,114 @@ export function AddressForm({
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* MAP COMPONENT */}
+        {locationLoading ? (
+          <View
+            style={[
+              styles.mapPlaceholder,
+              { justifyContent: 'center', alignItems: 'center' },
+            ]}
+          >
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text style={{ marginTop: 10, color: '#6B7280' }}>
+              Detecting Location...
+            </Text>
+          </View>
+        ) : (
+          <MapComponent
+            latitude={parseFloat(formData.lat) || 0}
+            longitude={parseFloat(formData.lng) || 0}
+            onLocationSelect={handleLocationSelect}
+          />
+        )}
         {/* READ-ONLY: System Identifiers and Status */}
-        <View style={styles.systemInfoContainer}>
-          <View style={styles.statusRow}>
-            <View style={[styles.statusBadge, { backgroundColor: address?.is_active ? '#DEF7EC' : '#FDE8E8' }]}>
-              <Ionicons name={address?.is_active ? 'checkmark-circle' : 'close-circle'} size={14} color={address?.is_active ? '#03543F' : '#9B1C1C'} />
-              <Text style={[styles.statusText, { color: address?.is_active ? '#03543F' : '#9B1C1C' }]}>
-                {address?.is_active ? 'Active Status' : 'Inactive'}
-              </Text>
-            </View>
-            <View style={[styles.statusBadge, { backgroundColor: address?.isServiceable ? '#E1EFFE' : '#FEF3C7' }]}>
-              <Ionicons name="location" size={14} color={address?.isServiceable ? '#1E429F' : '#92400E'} />
-              <Text style={[styles.statusText, { color: address?.isServiceable ? '#1E429F' : '#92400E' }]}>
-                {address?.isServiceable ? 'Serviceable' : 'Limited Service'}
-              </Text>
-            </View>
+        {/* <View style={styles.systemInfoContainer}> */}
+        <View style={styles.statusRow}>
+          <View
+            style={[
+              styles.statusBadge,
+              { backgroundColor: address?.is_active ? '#DEF7EC' : '#FDE8E8' },
+            ]}
+          >
+            <Ionicons
+              name={address?.is_active ? 'checkmark-circle' : 'close-circle'}
+              size={14}
+              color={address?.is_active ? '#03543F' : '#9B1C1C'}
+            />
+            <Text
+              style={[
+                styles.statusText,
+                { color: address?.is_active ? '#03543F' : '#9B1C1C' },
+              ]}
+            >
+              Address Status: {address?.is_active ? 'Active' : 'Inactive'}
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                backgroundColor: address?.isServiceable ? '#E1EFFE' : '#FEF3C7',
+              },
+            ]}
+          >
+            <Ionicons
+              name="location"
+              size={14}
+              color={address?.isServiceable ? '#1E429F' : '#92400E'}
+            />
+            <Text
+              style={[
+                styles.statusText,
+                { color: address?.isServiceable ? '#1E429F' : '#92400E' },
+              ]}
+            >
+              Address Serviceability:{' '}
+              {address?.isServiceable ? 'Serviceable' : 'No Service'}
+            </Text>
           </View>
         </View>
+        {/* </View> */}
 
+        {/* EDITABLE: Detailed Address */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelRow}>
+            <Text style={styles.editableLabel}>Address</Text>
+            <Ionicons name="pencil" size={14} color="#2563EB" />
+          </View>
+          <TextInput
+            placeholder="e.g. Building, Street, Area details"
+            value={formData.address}
+            onChangeText={(text) => setFormData({ ...formData, address: text })}
+            multiline
+            numberOfLines={4}
+            style={[
+              styles.input,
+              styles.textArea,
+              errors.address && styles.inputError,
+            ]}
+            placeholderTextColor="#9CA3AF"
+          />
+          {errors.address && (
+            <Text style={styles.errorText}>{errors.address}</Text>
+          )}
+        </View>
 
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
             <Text style={styles.label}>City</Text>
             <View style={styles.readOnlyBox}>
-              <Text style={styles.readOnlyText} numberOfLines={1}>{formData.city || 'N/A'}</Text>
+              <Text style={styles.readOnlyText} numberOfLines={1}>
+                {formData.city || 'Select on Map'}
+              </Text>
             </View>
           </View>
           <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
             <Text style={styles.label}>State</Text>
             <View style={styles.readOnlyBox}>
-              <Text style={styles.readOnlyText} numberOfLines={1}>{formData.state || 'N/A'}</Text>
+              <Text style={styles.readOnlyText} numberOfLines={1}>
+                {formData.state || 'Select on Map'}
+              </Text>
             </View>
           </View>
         </View>
@@ -151,52 +304,23 @@ export function AddressForm({
           <TextInput
             placeholder="Enter 6-digit pincode"
             value={formData.pincode}
-            onChangeText={(text) => setFormData({ ...formData, pincode: text.replace(/[^0-9]/g, '') })}
+            onChangeText={(text) =>
+              setFormData({ ...formData, pincode: text.replace(/[^0-9]/g, '') })
+            }
             keyboardType="numeric"
             maxLength={6}
             style={[styles.input, errors.pincode && styles.inputError]}
             placeholderTextColor="#9CA3AF"
           />
-          {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
-        </View>
-
-        {/* EDITABLE: Detailed Address */}
-        <View style={styles.inputGroup}>
-          <View style={styles.labelRow}>
-            <Text style={styles.editableLabel}>Detailed Address</Text>
-            <Ionicons name="pencil" size={14} color="#2563EB" />
-          </View>
-          <TextInput
-            placeholder="e.g. Building, Street, Area details"
-            value={formData.address}
-            onChangeText={(text) => setFormData({ ...formData, address: text })}
-            multiline
-            numberOfLines={4}
-            style={[styles.input, styles.textArea, errors.address && styles.inputError]}
-            placeholderTextColor="#9CA3AF"
-          />
-          {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
-        </View>
-
-        {/* MOCKED GEOLOCATION INFO (READ-ONLY) */}
-        <View style={styles.mockSection}>
-          <Text style={styles.mockTitle}>Mocked Geodata (Awaiting Live Integration)</Text>
-          <View style={styles.row}>
-            <View style={[styles.mockItem, { flex: 1, marginRight: 6 }]}>
-              <Text style={styles.mockLabel}>LATITUDE</Text>
-              <Text style={styles.mockValue}>{formData.lat}</Text>
-            </View>
-            <View style={[styles.mockItem, { flex: 1, marginLeft: 6 }]}>
-              <Text style={styles.mockLabel}>LONGITUDE</Text>
-              <Text style={styles.mockValue}>{formData.lng}</Text>
-            </View>
-          </View>
+          {errors.pincode && (
+            <Text style={styles.errorText}>{errors.pincode}</Text>
+          )}
         </View>
 
         {/* SUBMISSION ACTION */}
         <TouchableOpacity
           style={[styles.saveButton, isPending && styles.disabledButton]}
-          onPress={isPending ? () => { } : handleSave}
+          onPress={isPending ? () => {} : handleSave}
           activeOpacity={0.8}
           accessibilityRole="button"
         >
@@ -205,7 +329,12 @@ export function AddressForm({
           ) : (
             <>
               <Text style={styles.saveButtonText}>Apply Changes</Text>
-              <Ionicons name="arrow-forward" size={18} color="white" style={{ marginLeft: 8 }} />
+              <Ionicons
+                name="arrow-forward"
+                size={18}
+                color="white"
+                style={{ marginLeft: 8 }}
+              />
             </>
           )}
         </TouchableOpacity>
@@ -422,5 +551,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#93C5FD',
     elevation: 0,
     shadowOpacity: 0,
+  },
+  mapPlaceholder: {
+    height: 250,
+    width: '100%',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

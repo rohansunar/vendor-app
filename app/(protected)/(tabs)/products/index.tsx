@@ -15,7 +15,6 @@ import {
 export default function ProductsTab() {
   const { data, isLoading, refetch, isFetching } = useProducts();
 
-
   if (isLoading) {
     return (
       <View style={styles.center}>

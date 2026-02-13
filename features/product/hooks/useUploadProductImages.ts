@@ -15,9 +15,8 @@ export function useUploadProductImages(productId: string) {
 
     onSuccess: () => {
       // Refresh product data to get latest images
-      queryClient.invalidateQueries({
-        queryKey: ['product', productId],
-      });
+      queryClient.invalidateQueries({ queryKey: ['products']});
+      queryClient.invalidateQueries({ queryKey: ['product', productId]});
     },
   });
 }

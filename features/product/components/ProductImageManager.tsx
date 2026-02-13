@@ -220,10 +220,10 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   listContainer: {
-    height: 120,
+    height: 100, // Reduced from 120
   },
   imageCard: {
-    marginRight: 16,
+    marginRight: 12, // Reduced from 16
     position: 'relative',
   },
   activeImageCard: {
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.05 }],
   },
   imageWrapper: {
-    borderRadius: 16,
+    borderRadius: 12, // Reduced from 16
     overflow: 'hidden',
     backgroundColor: '#F1F5F9',
     borderWidth: 1,
@@ -243,29 +243,29 @@ const styles = StyleSheet.create({
   },
   mainBadge: {
     position: 'absolute',
-    bottom: 8,
-    left: 8,
+    bottom: 4,
+    left: 4,
     backgroundColor: 'rgba(15, 23, 42, 0.75)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
   mainBadgeText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   deleteButton: {
     position: 'absolute',
-    top: -8,
-    right: -8,
+    top: -6,
+    right: -6,
     zIndex: 10,
   },
   deleteIconBg: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: '#EF4444',
     alignItems: 'center',
     justifyContent: 'center',
@@ -274,34 +274,34 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     backgroundColor: '#F8FAFF',
-    borderRadius: 20,
+    borderRadius: 16,
     borderWidth: 2,
     borderColor: '#E2E8F0',
     borderStyle: 'dashed',
-    padding: 30,
+    padding: 20, // Reduced from 30
     alignItems: 'center',
     justifyContent: 'center',
   },
   emptyIconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 48, // Reduced from 60
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
   emptyText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: '#0F172A',
   },
   emptySubtext: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#64748B',
-    marginTop: 4,
+    marginTop: 2,
     textAlign: 'center',
   },
   uploadOverlay: {

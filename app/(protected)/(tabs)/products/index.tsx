@@ -1,8 +1,7 @@
 import { ProductCard } from '@/features/product/components/ProductCard';
 import { useProducts } from '@/features/product/hooks/useProducts';
 import { Feather } from '@expo/vector-icons';
-import { router, useNavigation } from 'expo-router';
-import { useEffect } from 'react';
+import { router } from 'expo-router';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,22 +14,7 @@ import {
 
 export default function ProductsTab() {
   const { data, isLoading, refetch, isFetching } = useProducts();
-  const navigation = useNavigation();
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'My Products',
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => router.push('/products/create')}
-          style={styles.addButton}
-          activeOpacity={0.7}
-        >
-          <Feather name="plus" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
 
   if (isLoading) {
     return (

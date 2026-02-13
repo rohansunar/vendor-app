@@ -46,6 +46,7 @@ export default function TabsLayout() {
         name="products"
         options={{
           title: 'Products',
+          headerShown: false, // 👈 Nested stack handles header
           tabBarIcon: ({ color, size }) => (
             <Feather name="box" size={size} color={color} />
           ),
@@ -86,20 +87,7 @@ export default function TabsLayout() {
           headerTitle: 'Bank',
         }}
       />
-      <Tabs.Screen
-        name="products/create"
-        options={{
-          href: null, // 👈 hides from bottom tab bar
-          headerTitle: 'products/create',
-        }}
-      />
-      <Tabs.Screen
-        name="products/[id]"
-        options={{
-          href: null, // 👈 hides from bottom tab bar
-          headerTitle: 'products/[id]',
-        }}
-      />
     </Tabs>
+
   );
 }

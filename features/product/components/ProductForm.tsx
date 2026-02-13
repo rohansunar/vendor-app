@@ -1,18 +1,17 @@
 import { useCategories } from '@/features/category/hooks/useCategories';
 import { Feather } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
+  Modal,
   ScrollView,
   StyleSheet,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 import { Product } from '../product.types';
 
@@ -30,9 +29,14 @@ type Props = {
   isPending: boolean;
 };
 
+/**
+ * ProductForm: Handles creation and updating of products.
+ * Uses a custom Modal-based picker for categories for a modern, controllable UX.
+ */
 export function ProductForm({ product, onSubmit, isPending }: Props) {
   const { data: categories, isLoading: isLoadingCats } = useCategories();
 
+  // Form State
   const [name, setName] = useState(product?.name ?? '');
   const [description, setDescription] = useState(product?.description ?? '');
   const [price, setPrice] = useState(product?.price?.toString() ?? '');
@@ -43,8 +47,11 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
     product?.is_schedulable ?? false,
   );
 
+  // UI State
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
+  // Sync state with product prop for updates
   useEffect(() => {
     if (product) {
       setCategoryId(product.categoryId);
@@ -77,6 +84,8 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
       categoryId,
     });
   }
+
+  const selectedCategoryName = categories?.find((c) => c.id === categoryId)?.name;
 
   const renderInput = (
     label: string,
@@ -118,154 +127,183 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Basic Information</Text>
+    <View style={styles.formContainer}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Basic Information</Text>
 
-          {renderInput('Product Name *', name, setName, 'e.g. 20L Water Jar', {
-            error: errors.name,
-            errorKey: 'name',
-          })}
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Category *</Text>
-            <View
-              style={[
-                styles.pickerContainer,
-                errors.category && styles.inputError,
-              ]}
-            >
-              <Picker
-                selectedValue={categoryId}
-                onValueChange={(val) => {
-                  setCategoryId(val);
-                  setErrors((prev) => ({ ...prev, category: '' }));
-                }}
-                style={styles.picker}
-              >
-                <Picker.Item label="Select category" value="" color="#94A3B8" />
-                {categories?.map((cat) => (
-                  <Picker.Item
-                    key={cat.id}
-                    label={cat.name}
-                    value={cat.id}
-                    color="#0F172A"
-                  />
-                ))}
-              </Picker>
-            </View>
-            {errors.category && (
-              <Text style={styles.errorText}>{errors.category}</Text>
-            )}
-          </View>
-
-          <View style={styles.row}>
-            <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
-              {renderInput('Price (₹) *', price, setPrice, '0.00', {
-                keyboardType: 'numeric',
-                error: errors.price,
-                errorKey: 'price',
-              })}
-            </View>
-            <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
-              {renderInput('Deposit (₹)', deposit, setDeposit, '0.00', {
-                keyboardType: 'numeric',
-              })}
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Details</Text>
-          {renderInput(
-            'Description',
-            description,
-            setDescription,
-            'Tell us more about the product...',
-            {
-              multiline: true,
-              numberOfLines: 4,
-              textAlignVertical: 'top',
-            },
-          )}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-
-          <View style={styles.switchRow}>
-            <View>
-              <Text style={styles.switchLabel}>Active Status</Text>
-              <Text style={styles.switchSubLabel}>
-                Allow customers to see this product
-              </Text>
-            </View>
-            <Switch
-              value={isActive}
-              onValueChange={setIsActive}
-              trackColor={{ false: '#CBD5E1', true: '#BFDBFE' }}
-              thumbColor={isActive ? '#2563EB' : '#F8FAFF'}
-            />
-          </View>
-
-          <View
+        {/* Category Selection - Moved to Top */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Category *</Text>
+          <TouchableOpacity
             style={[
-              styles.switchRow,
-              { borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 16 },
+              styles.customPicker,
+              errors.category && styles.inputError,
             ]}
+            onPress={() => setIsPickerVisible(true)}
+            activeOpacity={0.7}
           >
-            <View>
-              <Text style={styles.switchLabel}>Schedulable</Text>
-              <Text style={styles.switchSubLabel}>
-                Enable subscription/scheduled orders
-              </Text>
-            </View>
-            <Switch
-              value={isSchedulable}
-              onValueChange={setIsSchedulable}
-              trackColor={{ false: '#CBD5E1', true: '#BFDBFE' }}
-              thumbColor={isSchedulable ? '#2563EB' : '#F8FAFF'}
-            />
-          </View>
+            <Text style={[styles.pickerValue, !selectedCategoryName && styles.placeholderText]}>
+              {selectedCategoryName || 'Select category'}
+            </Text>
+            <Feather name="chevron-down" size={20} color="#94A3B8" />
+          </TouchableOpacity>
+          {errors.category && (
+            <Text style={styles.errorText}>{errors.category}</Text>
+          )}
         </View>
 
-        <TouchableOpacity
-          style={[styles.saveButton, isPending && styles.disabled]}
-          onPress={handleSubmit}
-          disabled={isPending}
+        {renderInput('Product Name *', name, setName, 'e.g. 20L Water Jar', {
+          error: errors.name,
+          errorKey: 'name',
+        })}
+
+        <View style={styles.row}>
+          <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+            {renderInput('Price (₹) *', price, setPrice, '0.00', {
+              keyboardType: 'numeric',
+              error: errors.price,
+              errorKey: 'price',
+            })}
+          </View>
+          <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
+            {renderInput('Deposit (₹)', deposit, setDeposit, '0.00', {
+              keyboardType: 'numeric',
+            })}
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Details</Text>
+        {renderInput(
+          'Description',
+          description,
+          setDescription,
+          'Tell us more about the product...',
+          {
+            multiline: true,
+            numberOfLines: 3,
+            textAlignVertical: 'top',
+          },
+        )}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Preferences</Text>
+
+        <View style={styles.switchRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.switchLabel}>Active Status</Text>
+            <Text style={styles.switchSubLabel}>
+              Visible to customers
+            </Text>
+          </View>
+          <Switch
+            value={isActive}
+            onValueChange={setIsActive}
+            trackColor={{ false: '#CBD5E1', true: '#BFDBFE' }}
+            thumbColor={isActive ? '#2563EB' : '#F8FAFF'}
+          />
+        </View>
+
+        <View
+          style={[
+            styles.switchRow,
+            { borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 16 },
+          ]}
         >
-          {isPending ? (
-            <ActivityIndicator color="#FFFFFF" />
-          ) : (
-            <>
-              <Feather
-                name="check"
-                size={20}
-                color="#FFFFFF"
-                style={{ marginRight: 8 }}
-              />
-              <Text style={styles.saveText}>
-                {product ? 'Update Product' : 'Create Product'}
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.switchLabel}>Schedulable</Text>
+            <Text style={styles.switchSubLabel}>
+              Subscription enabled
+            </Text>
+          </View>
+          <Switch
+            value={isSchedulable}
+            onValueChange={setIsSchedulable}
+            trackColor={{ false: '#CBD5E1', true: '#BFDBFE' }}
+            thumbColor={isSchedulable ? '#2563EB' : '#F8FAFF'}
+          />
+        </View>
+      </View>
+
+      <TouchableOpacity
+        style={[styles.saveButton, isPending && styles.disabled]}
+        onPress={handleSubmit}
+        disabled={isPending}
+      >
+        {isPending ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <>
+            <Feather
+              name="check"
+              size={20}
+              color="#FFFFFF"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.saveText}>
+              {product ? 'Update Product' : 'Create Product'}
+            </Text>
+          </>
+        )}
+      </TouchableOpacity>
+
+      {/* Modern Minimal Category Picker Modal */}
+      <Modal
+        visible={isPickerVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsPickerVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setIsPickerVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>Select Category</Text>
+                  <TouchableOpacity onPress={() => setIsPickerVisible(false)}>
+                    <Feather name="x" size={24} color="#64748B" />
+                  </TouchableOpacity>
+                </View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {categories?.map((cat) => (
+                    <TouchableOpacity
+                      key={cat.id}
+                      style={[
+                        styles.categoryItem,
+                        categoryId === cat.id && styles.categoryItemActive,
+                      ]}
+                      onPress={() => {
+                        setCategoryId(cat.id);
+                        setErrors((prev) => ({ ...prev, category: '' }));
+                        setIsPickerVisible(false);
+                      }}
+                    >
+                      <Text style={[
+                        styles.categoryText,
+                        categoryId === cat.id && styles.categoryTextActive,
+                      ]}>
+                        {cat.name}
+                      </Text>
+                      {categoryId === cat.id && (
+                        <Feather name="check" size={18} color="#2563EB" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
+  formContainer: {
+    // Container for the form elements
   },
   centered: {
     padding: 40,
@@ -281,8 +319,8 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
+    padding: 16, // Reduced internal padding
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -293,7 +331,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#0F172A',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   inputGroup: {
     marginBottom: 16,
@@ -316,6 +354,24 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0F172A',
   },
+  customPicker: {
+    backgroundColor: '#F8FAFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  pickerValue: {
+    fontSize: 15,
+    color: '#0F172A',
+    fontWeight: '500',
+  },
+  placeholderText: {
+    color: '#94A3B8',
+  },
   inputError: {
     borderColor: '#EF4444',
     backgroundColor: '#FEF2F2',
@@ -327,18 +383,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   textArea: {
-    height: 100,
+    height: 80, // Slightly reduced height
     textAlignVertical: 'top',
-  },
-  pickerContainer: {
-    backgroundColor: '#F8FAFF',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: Platform.OS === 'ios' ? undefined : 50,
   },
   switchRow: {
     flexDirection: 'row',
@@ -363,6 +409,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 8,
     shadowColor: '#2563EB',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -376,5 +423,52 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.7,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    padding: 24,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  categoryItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  categoryItemActive: {
+    backgroundColor: '#F8FAFF',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    marginHorizontal: -12,
+    borderBottomColor: 'transparent',
+  },
+  categoryText: {
+    fontSize: 16,
+    color: '#475569',
+    fontWeight: '500',
+  },
+  categoryTextActive: {
+    color: '#2563EB',
+    fontWeight: '700',
   },
 });

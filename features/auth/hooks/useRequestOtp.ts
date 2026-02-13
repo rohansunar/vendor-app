@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { authService } from '../services/authService';
+import { authService } from '../services/auth.service';
 /**
  * Requests OTP for a phone number
  * Responsibility:

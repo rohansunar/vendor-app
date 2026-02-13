@@ -8,7 +8,7 @@ export function AppDrawerContent(props: any) {
 
   async function handleLogout() {
     await logout();
-    router.replace('/auth/login');
+    router.replace('/(auth)/login');
   }
 
   return (

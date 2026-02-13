@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addressService } from '../services/addressService';
+import { addressService } from '../';
 
 export function useUpdateAddress() {
   const queryClient = useQueryClient();
@@ -15,7 +15,7 @@ export function useUpdateAddress() {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['addresses'],
+        queryKey: ['address'],
       });
     },
   });

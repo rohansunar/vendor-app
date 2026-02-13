@@ -1,3 +1,4 @@
+import { AddressHeader } from '@/features/address/components/AddressHeader';
 import { AvatarMenu } from '@/shared/ui/AvatarMenu';
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
@@ -16,6 +17,7 @@ export default function TabsLayout() {
         headerTitleStyle: {
           fontWeight: '700',
         },
+        headerTitle: () => <AddressHeader />,
         headerRight: () => <AvatarMenu />,
         tabBarActiveTintColor: '#2563EB',
         tabBarInactiveTintColor: '#94A3B8',

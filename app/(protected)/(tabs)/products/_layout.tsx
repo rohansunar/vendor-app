@@ -1,3 +1,4 @@
+import { AddressHeader } from '@/features/address/components/AddressHeader';
 import { Feather } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
 import { TouchableOpacity } from 'react-native';
@@ -10,6 +11,7 @@ export default function ProductsLayout() {
                 headerStyle: {
                     backgroundColor: '#1e72f9',
                 },
+                headerTitle: () => <AddressHeader />,
                 headerTintColor: '#FFFFFF',
                 headerTitleStyle: {
                     fontWeight: '700',
@@ -19,7 +21,7 @@ export default function ProductsLayout() {
             <Stack.Screen
                 name="index"
                 options={{
-                    title: 'My Products',
+                    headerTitle: () => <AddressHeader />,
                     headerRight: () => (
                         <TouchableOpacity
                             onPress={() => router.push('/products/create')}

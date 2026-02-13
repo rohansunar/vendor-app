@@ -12,7 +12,7 @@ export function useAuthGuard() {
     if (loading) return;
 
     if (!isAuthenticated) {
-      router.replace('/auth/login');
+      router.replace('/(auth)/login');
     }
   }, [isAuthenticated, loading]);
 }

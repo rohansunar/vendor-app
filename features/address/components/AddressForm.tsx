@@ -1,10 +1,9 @@
-import { useCities } from '@/features/city/hooks/useCities';
-import { INDIAN_STATES } from '@/shared/constants/indianStates';
 import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import {
-  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,215 +11,416 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { AddressFormProps } from '../types';
+import { AddressFormData, AddressFormProps } from '../address.types';
 
+/**
+ * AddressForm component for updating delivery address.
+ * Adheres to requirements: restricted editing (only address and pincode),
+ * read-only system fields, and mocked geolocation.
+ */
 export function AddressForm({
   address,
   onSave,
   onCancel,
   isPending,
 }: AddressFormProps) {
-  const { data: cities, isLoading: isCitiesLoading } = useCities();
-  const [service_radius_m, setServiceRadiusM] = useState(
-    address?.service_radius_m?.toString() || '',
-  );
-  const [street, setStreet] = useState(address?.street || '');
-  const [cityId, setCityId] = useState(address?.cityId || '');
-  const [state, setState] = useState(address?.state || '');
-  const [zipCode, setZipCode] = useState(address?.zipCode || '');
-  const [lat, setLat] = useState(address?.location?.lat?.toString() || '');
-  const [lng, setLng] = useState(address?.location?.lng?.toString() || '');
-  const [fullAddress, setFullAddress] = useState(address?.address || '');
+  const [formData, setFormData] = useState<AddressFormData>({
+    pincode: address?.pincode || '',
+    address: address?.address || '',
+    city: address?.location?.name || '',
+    state: address?.location?.state || '',
+    lat: '12.9716', // Mock latitude value as per requirements
+    lng: '77.5946', // Mock longitude value as per requirements
+  });
+
+  const [errors, setErrors] = useState<Partial<Record<keyof AddressFormData, string>>>({});
 
   useEffect(() => {
     if (address) {
-      setServiceRadiusM(address.service_radius_m.toString());
-      setStreet(address.street);
-      setCityId(address.cityId);
-      setState(address.state);
-      setZipCode(address.zipCode);
-      setLat(address.location?.lat?.toString() || '');
-      setLng(address.location?.lng?.toString() || '');
-      setFullAddress(address.address);
+      setFormData({
+        pincode: address.pincode,
+        address: address.address,
+        city: address.location?.name || '',
+        state: address.location?.state || '',
+        lat: '12.9716',
+        lng: '77.5946',
+      });
     }
   }, [address]);
 
-  const handleSave = () => {
-    if (
-      !service_radius_m ||
-      !street ||
-      !cityId ||
-      !state ||
-      !zipCode ||
-      !lat ||
-      !lng ||
-      !fullAddress
-    ) {
-      Alert.alert('Error', 'All fields are required');
-      return;
+  /**
+   * Validates form inputs according to requirements.
+   * Only pincode and address fields are validated as they are the only editable inputs.
+   */
+  const validate = (): boolean => {
+    const newErrors: typeof errors = {};
+
+    // Detailed Address Validation
+    if (!formData.address.trim()) {
+      newErrors.address = 'Detailed address is required for deliveries';
+    } else if (formData.address.trim().length < 8) {
+      newErrors.address = 'Please provide a more specific address details';
     }
-    const radius = parseFloat(service_radius_m);
-    const latitude = parseFloat(lat);
-    const longitude = parseFloat(lng);
-    if (isNaN(radius) || isNaN(latitude) || isNaN(longitude)) {
-      Alert.alert('Error', 'Invalid numeric values');
-      return;
+
+    // Pincode Validation (Standard 6-digit check)
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = 'Pincode is required to locate your area';
+    } else if (!/^\d{6}$/.test(formData.pincode)) {
+      newErrors.pincode = 'Please enter a valid 6-digit area pincode';
     }
-    onSave({
-      service_radius_m: radius,
-      street,
-      cityId,
-      state,
-      zipCode,
-      location: { lat: latitude, lng: longitude },
-      address: fullAddress,
-    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const isEdit = !!address;
+  /**
+   * Handles form submission with mocked coordinates.
+   */
+  const handleSave = () => {
+    try {
+      if (validate()) {
+        onSave(formData);
+      }
+    } catch (error) {
+      // Structured logging as per requirements
+      console.error(`[AddressForm] Submission error at ${new Date().toISOString()}:`, error);
+    }
+  };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.keyboardView}
+    >
+      {/* Visual Header with handle indicator for bottom sheet feel */}
       <View style={styles.header}>
-        <Text style={styles.title}>
-          {isEdit ? 'Edit Address' : 'Add Address'}
-        </Text>
-        <TouchableOpacity onPress={onCancel}>
-          <Ionicons name="close" size={24} color="black" />
-        </TouchableOpacity>
+        <View style={styles.headerIndicator} />
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>Update Address Details</Text>
+          <TouchableOpacity onPress={onCancel} style={styles.closeButton} accessibilityLabel="Close form">
+            <Ionicons name="close" size={24} color="#374151" />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <TextInput
-        placeholder="Street"
-        value={street}
-        onChangeText={setStreet}
-        style={styles.input}
-      />
-
-      <Text>City</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={cityId}
-          onValueChange={(value) => setCityId(value)}
-        >
-          <Picker.Item label="Select City" value="" />
-
-          {cities?.map((city: any) => (
-            <Picker.Item key={city.id} label={city.name} value={city.id} />
-          ))}
-        </Picker>
-      </View>
-
-      <Text>State</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={state}
-          onValueChange={(value) => setState(value)}
-        >
-          <Picker.Item label="Select State" value="" />
-
-          {INDIAN_STATES.map((stateName) => (
-            <Picker.Item key={stateName} label={stateName} value={stateName} />
-          ))}
-        </Picker>
-      </View>
-
-      <TextInput
-        placeholder="Zip Code"
-        value={zipCode}
-        onChangeText={setZipCode}
-        style={[styles.input]}
-      />
-
-      <TextInput
-        placeholder="Latitude"
-        value={lat}
-        onChangeText={setLat}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Longitude"
-        value={lng}
-        onChangeText={setLng}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Full Address"
-        value={fullAddress}
-        onChangeText={setFullAddress}
-        multiline
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Service Radius (m)"
-        value={service_radius_m}
-        onChangeText={setServiceRadiusM}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <TouchableOpacity
-        style={[styles.saveButton, isPending && styles.disabledButton]}
-        onPress={isPending ? () => {} : handleSave}
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.saveButtonText}>
-          {isPending ? 'Saving...' : 'Save'}
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+        {/* READ-ONLY: System Identifiers and Status */}
+        <View style={styles.systemInfoContainer}>
+          <View style={styles.statusRow}>
+            <View style={[styles.statusBadge, { backgroundColor: address?.is_active ? '#DEF7EC' : '#FDE8E8' }]}>
+              <Ionicons name={address?.is_active ? 'checkmark-circle' : 'close-circle'} size={14} color={address?.is_active ? '#03543F' : '#9B1C1C'} />
+              <Text style={[styles.statusText, { color: address?.is_active ? '#03543F' : '#9B1C1C' }]}>
+                {address?.is_active ? 'Active Status' : 'Inactive'}
+              </Text>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: address?.isServiceable ? '#E1EFFE' : '#FEF3C7' }]}>
+              <Ionicons name="location" size={14} color={address?.isServiceable ? '#1E429F' : '#92400E'} />
+              <Text style={[styles.statusText, { color: address?.isServiceable ? '#1E429F' : '#92400E' }]}>
+                {address?.isServiceable ? 'Serviceable' : 'Limited Service'}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+
+        <View style={styles.row}>
+          <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
+            <Text style={styles.label}>City</Text>
+            <View style={styles.readOnlyBox}>
+              <Text style={styles.readOnlyText} numberOfLines={1}>{formData.city || 'N/A'}</Text>
+            </View>
+          </View>
+          <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
+            <Text style={styles.label}>State</Text>
+            <View style={styles.readOnlyBox}>
+              <Text style={styles.readOnlyText} numberOfLines={1}>{formData.state || 'N/A'}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* EDITABLE: Pincode */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelRow}>
+            <Text style={styles.editableLabel}>Pincode</Text>
+            <Ionicons name="pencil" size={14} color="#2563EB" />
+          </View>
+          <TextInput
+            placeholder="Enter 6-digit pincode"
+            value={formData.pincode}
+            onChangeText={(text) => setFormData({ ...formData, pincode: text.replace(/[^0-9]/g, '') })}
+            keyboardType="numeric"
+            maxLength={6}
+            style={[styles.input, errors.pincode && styles.inputError]}
+            placeholderTextColor="#9CA3AF"
+          />
+          {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
+        </View>
+
+        {/* EDITABLE: Detailed Address */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelRow}>
+            <Text style={styles.editableLabel}>Detailed Address</Text>
+            <Ionicons name="pencil" size={14} color="#2563EB" />
+          </View>
+          <TextInput
+            placeholder="e.g. Building, Street, Area details"
+            value={formData.address}
+            onChangeText={(text) => setFormData({ ...formData, address: text })}
+            multiline
+            numberOfLines={4}
+            style={[styles.input, styles.textArea, errors.address && styles.inputError]}
+            placeholderTextColor="#9CA3AF"
+          />
+          {errors.address && <Text style={styles.errorText}>{errors.address}</Text>}
+        </View>
+
+        {/* MOCKED GEOLOCATION INFO (READ-ONLY) */}
+        <View style={styles.mockSection}>
+          <Text style={styles.mockTitle}>Mocked Geodata (Awaiting Live Integration)</Text>
+          <View style={styles.row}>
+            <View style={[styles.mockItem, { flex: 1, marginRight: 6 }]}>
+              <Text style={styles.mockLabel}>LATITUDE</Text>
+              <Text style={styles.mockValue}>{formData.lat}</Text>
+            </View>
+            <View style={[styles.mockItem, { flex: 1, marginLeft: 6 }]}>
+              <Text style={styles.mockLabel}>LONGITUDE</Text>
+              <Text style={styles.mockValue}>{formData.lng}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* SUBMISSION ACTION */}
+        <TouchableOpacity
+          style={[styles.saveButton, isPending && styles.disabledButton]}
+          onPress={isPending ? () => { } : handleSave}
+          activeOpacity={0.8}
+          accessibilityRole="button"
+        >
+          {isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Text style={styles.saveButtonText}>Apply Changes</Text>
+              <Ionicons name="arrow-forward" size={18} color="white" style={{ marginLeft: 8 }} />
+            </>
+          )}
+        </TouchableOpacity>
+
+        <View style={{ height: 40 }} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-    color: 'black',
+  keyboardView: {
+    width: '100%',
   },
   header: {
+    paddingTop: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  headerIndicator: {
+    width: 36,
+    height: 4,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
-  input: {
-    borderWidth: 1,
-    padding: 12,
-    marginBottom: 12,
-    borderRadius: 4,
-    color: 'black',
-    borderColor: 'gray',
+  title: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#111827',
   },
-  pickerWrapper: {
+  closeButton: {
+    padding: 6,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 20,
+  },
+  container: {
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: Platform.OS === 'ios' ? 80 : 60,
+  },
+  systemInfoContainer: {
+    backgroundColor: '#F9FAFB',
+    padding: 14,
+    borderRadius: 16,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    marginBottom: 12,
+    borderColor: '#F3F4F6',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  infoLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9CA3AF',
+    textTransform: 'uppercase',
+    width: 70,
+  },
+  infoValue: {
+    fontSize: 12,
+    color: '#4B5563',
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: '700',
+    marginLeft: 4,
+  },
+  inputGroup: {
+    marginBottom: 18,
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 8,
+    marginLeft: 2,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    marginLeft: 2,
+  },
+  editableLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginRight: 6,
+  },
+  readOnlyBox: {
+    backgroundColor: '#F3F4F6',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  readOnlyText: {
+    fontSize: 15,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    padding: 12,
+    borderRadius: 14,
+    fontSize: 16,
+    color: '#111827',
+  },
+  inputError: {
+    borderColor: '#EF4444',
+    backgroundColor: '#FEF2F2',
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 6,
+    marginLeft: 4,
+  },
+  mockSection: {
+    marginTop: 10,
+    marginBottom: 24,
+    padding: 14,
+    backgroundColor: '#F0F9FF',
+    borderRadius: 16,
+    borderStyle: 'dashed',
+    borderWidth: 1.5,
+    borderColor: '#BAE6FD',
+  },
+  mockTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0369A1',
+    marginBottom: 10,
+    textTransform: 'uppercase',
+  },
+  mockItem: {
+    backgroundColor: '#FFFFFF',
+    padding: 8,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  mockLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#94A3B8',
+    marginBottom: 2,
+  },
+  mockValue: {
+    fontSize: 13,
+    color: '#0369A1',
+    fontWeight: '700',
   },
   saveButton: {
-    backgroundColor: '#007AFF',
-    padding: 12,
-    borderRadius: 4,
+    backgroundColor: '#2563EB',
+    padding: 16,
+    borderRadius: 18,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 16,
+    justifyContent: 'center',
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 8,
   },
   saveButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   disabledButton: {
-    opacity: 0.5,
+    backgroundColor: '#93C5FD',
+    elevation: 0,
+    shadowOpacity: 0,
   },
 });

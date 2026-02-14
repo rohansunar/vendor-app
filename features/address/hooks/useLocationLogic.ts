@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 export interface LocationData {
   latitude: number;
@@ -11,7 +11,6 @@ export interface AddressDetails {
   city: string;
   state: string;
   pincode: string;
-  fullAddress?: string;
 }
 
 export const useLocationLogic = () => {
@@ -32,9 +31,17 @@ export const useLocationLogic = () => {
       if (status !== 'granted') {
         setErrorMSG('Permission to access location was denied');
         Alert.alert(
-          'Permission Denied',
-          'Allow location access to automatically detect your address.',
-          [{ text: 'OK' }],
+          "Location Permission Required",
+          "Location is blocked. Please enable it from Settings to continue.",
+          [
+            {
+              text: "Open Settings",
+              onPress: () => {
+                Linking.openSettings();
+              },
+            },
+            { text: "Cancel", style: "cancel" },
+          ]
         );
         setLoading(false);
         return null;
@@ -54,7 +61,6 @@ export const useLocationLogic = () => {
 
       return { latitude, longitude };
     } catch (error) {
-      console.error('[useLocationLogic] Error getting location:', error);
       setErrorMSG('Failed to get current location');
 
       // Fallback to a default location (e.g., center of India or a major city) to allow map interaction
@@ -65,8 +71,14 @@ export const useLocationLogic = () => {
       Alert.alert(
         'Location Unavailable',
         'Could not fetch your exact location. Please use the map to pin your address.',
-        [{ text: 'OK' }],
-      );
+        [{
+              text: "Open Settings",
+              onPress: () => {
+                Linking.openSettings();
+              },
+            },
+        { text: "Cancel", style: "cancel" }
+      ]);
 
       setLoading(false);
       return fallbackLocation;
@@ -87,16 +99,7 @@ export const useLocationLogic = () => {
           const newDetails: AddressDetails = {
             city: item.city || item.subregion || '',
             state: item.region || '',
-            pincode: item.postalCode || '',
-            fullAddress: [
-              item.street,
-              item.district,
-              item.city,
-              item.region,
-              item.postalCode,
-            ]
-              .filter(Boolean)
-              .join(', '),
+            pincode: item.postalCode || ''
           };
           setAddressDetails(newDetails);
         }

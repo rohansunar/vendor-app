@@ -5,13 +5,8 @@ export function useUpdateAddress() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: Parameters<typeof addressService.updateAddress>[1];
-    }) => addressService.updateAddress(id, data),
+    mutationFn: (data: Parameters<typeof addressService.updateAddress>[0]) =>
+      addressService.updateAddress(data),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

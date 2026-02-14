@@ -3,11 +3,12 @@ import { getErrorMessage } from '@/core/utils/getErrorMessage';
 import {
   useAddresses,
   useCreateAddress,
+  useLocationLogic,
   useUpdateAddress,
 } from '@/features/address';
 import { AddressFormData } from '@/features/address/address.types';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -19,8 +20,27 @@ import {
 import { AddressForm } from './AddressForm';
 
 export function AddressHeader() {
-  const { data: address, isLoading } = useAddresses();
+  const { data: address, isLoading, isError } = useAddresses();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { requestPermissionAndGetCurrentLocation } = useLocationLogic();
+
+  // Automatically ask for location if address fails or is empty
+  useEffect(() => {
+    let mounted = true;
+    if (!isLoading && (isError || !address)) {
+      requestPermissionAndGetCurrentLocation().then(
+        (location: { latitude: number; longitude: number } | null) => {
+          console.log('Location', location);
+          if (mounted && location) {
+            setIsModalVisible(true);
+          }
+        },
+      );
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [isLoading, isError, address, requestPermissionAndGetCurrentLocation]);
 
   const createMutation = useCreateAddress();
   const updateMutation = useUpdateAddress();
@@ -28,7 +48,7 @@ export function AddressHeader() {
   const handleSave = (formData: AddressFormData) => {
     if (address?.id) {
       updateMutation.mutate(
-        { id: address.id, data: formData },
+        formData,
         {
           onSuccess: (res) => {
             showSuccess(res?.data?.message || 'Address updated successfully');

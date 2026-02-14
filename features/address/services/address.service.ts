@@ -10,14 +10,8 @@ export const addressService = {
   async getAddresses(): Promise<Address | null> {
     try {
       const response = await apiClient.get(API_ENDPOINTS.ADDRESS);
-      // The requirement says single address. If it's an array, we take first.
-      // If it's an object, we return it.
-      if (Array.isArray(response.data)) {
-        return response.data.length > 0 ? response.data[0] : null;
-      }
       return response.data || null;
     } catch (error) {
-      console.error('Failed to fetch addresses:', error);
       throw error;
     }
   },
@@ -29,7 +23,6 @@ export const addressService = {
     try {
       return await apiClient.post(API_ENDPOINTS.ADDRESS, data);
     } catch (error) {
-      console.error('Failed to create address:', error);
       throw error;
     }
   },
@@ -37,11 +30,11 @@ export const addressService = {
   /**
    * Update address details by ID
    */
-  async updateAddress(id: string, data: AddressFormData) {
+  async updateAddress(data: AddressFormData) {
     try {
-      return await apiClient.put(`${API_ENDPOINTS.ADDRESS}/${id}`, data);
+      console.log("UpdateData", data)
+      return await apiClient.put(API_ENDPOINTS.ADDRESS, data);
     } catch (error) {
-      console.error('Failed to update address:', error);
       throw error;
     }
   },

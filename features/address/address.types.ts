@@ -7,7 +7,8 @@ export type Address = {
   location: {
     name: string; // City
     state: string;
-    country: string;
+    lat: number;
+    lng:number;
   };
   createdAt?: string;
 };
@@ -17,8 +18,8 @@ export interface AddressFormData {
   address: string;
   city: string;
   state: string;
-  lat: string; // Mocked
-  lng: string; // Mocked
+  lat: string;
+  lng: string;
 }
 
 export interface AddressFormProps {

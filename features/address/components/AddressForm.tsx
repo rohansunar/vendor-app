@@ -1,7 +1,8 @@
+import { GradientButton } from '@/shared/ui/GradientButton';
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -10,10 +11,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { AddressFormValues, addressSchema } from '../address.schema';
-import { AddressFormData, AddressFormProps } from '../address.types';
+import { AddressFormProps } from '../address.types';
 import { useLocationLogic } from '../hooks/useLocationLogic';
 import { AddressStatus } from './AddressStatus';
 import { MapComponent } from './MapComponent';
@@ -23,7 +24,9 @@ import { addressStyles as styles } from './address.style';
 /**
  * AddressForm component for updating delivery address.
  * Adheres to requirements: restricted editing (only address and pincode),
- * read-only system fields, and mocked geolocation.
+ * 
+ * Simplification: Uses only react-hook-form state management.
+ * No redundant local state - useWatch() for rendering and getValues() for submission.
  */
 export function AddressForm({
   address,
@@ -32,7 +35,6 @@ export function AddressForm({
   isPending,
 }: AddressFormProps) {
   const {
-    location,
     addressDetails,
     loading: locationLoading,
     requestPermissionAndGetCurrentLocation,
@@ -43,6 +45,7 @@ export function AddressForm({
   const {
     setValue,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
@@ -51,124 +54,59 @@ export function AddressForm({
       address: address?.address || '',
       city: address?.location?.name || '',
       state: address?.location?.state || '',
-      lat: '',
-      lng: '',
+      lat: address?.location?.lat?.toString() || '',
+      lng: address?.location?.lng?.toString() || '',
     },
   });
 
-  const [formData, setFormData] = useState<AddressFormData>({
-    pincode: address?.pincode || '',
-    address: address?.address || '',
-    city: address?.location?.name || '',
-    state: address?.location?.state || '',
-    lat: '',
-    lng: '',
-  });
+  // Watch form values for rendering - replaces redundant formData state
+  const formValues = useWatch({ control });
 
   const [showStatePicker, setShowStatePicker] = useState(false);
 
-
-  // Initialize form with address data if available
+  // Initialize form with address data and get location if needed
+  // Note: Intentional - only run when address prop changes, not on every render
   useEffect(() => {
-    if (address) {
-      setFormData((prev) => {
-        const newData = {
-          ...prev,
-          pincode: address.pincode,
-          address: address.address,
-          city: address.location?.name || '',
-          state: address.location?.state || '',
-          lat: prev.lat || '',
-          lng: prev.lng || '',
-        };
+    const hasExistingCoordinates = address?.location?.lat && address?.location?.lng;
+    const hasCoordinatesInForm = formValues.lat && formValues.lng;
 
-        // Sync with react-hook-form
-        setValue('pincode', newData.pincode);
-        setValue('address', newData.address);
-        setValue('city', newData.city);
-        setValue('state', newData.state);
-
-        return newData;
-      });
-
-      // If we don't have coordinates, we could try to geocode the address or just get current location
-      if (!formData.lat || !formData.lng) {
-        requestPermissionAndGetCurrentLocation().then((loc) => {
-          if (loc) {
-            const lat = loc.latitude.toString();
-            const lng = loc.longitude.toString();
-
-            setFormData((prev) => ({
-              ...prev,
-              lat,
-              lng,
-            }));
-
-            // Sync coordinates
-            setValue('lat', lat);
-            setValue('lng', lng);
-          }
-        });
-      }
-    } else {
-      // If no address provided (new/empty), try to get current location
+    // Only fetch current location if we DON'T have valid coordinates
+    if (!hasExistingCoordinates && !hasCoordinatesInForm) {
       requestPermissionAndGetCurrentLocation().then((loc) => {
         if (loc) {
           const lat = loc.latitude.toString();
           const lng = loc.longitude.toString();
-
-          setFormData((prev) => ({
-            ...prev,
-            lat,
-            lng,
-          }));
-
-          // Sync coordinates
           setValue('lat', lat);
           setValue('lng', lng);
+          setLocation({ latitude: loc.latitude, longitude: loc.longitude });
         }
       });
     }
   }, [address]);
 
   // Update form when address details from geocoding change
+  // Note: Intentional - only run when addressDetails change, setValue is stable
   useEffect(() => {
-    if (addressDetails.city || addressDetails.state || addressDetails.pincode) {
-      const newCity = addressDetails.city || formData.city;
-      const newState = addressDetails.state || formData.state;
-      const newPincode = addressDetails.pincode || formData.pincode;
-
-      setFormData((prev) => ({
-        ...prev,
-        city: newCity,
-        state: newState,
-        pincode: newPincode,
-      }));
-
-      // Sync with react-hook-form and trigger validation for these fields
-      // Use shouldValidate: true to clear errors if the new value is valid
-      if (addressDetails.city) setValue('city', newCity, { shouldValidate: true });
-      if (addressDetails.state) setValue('state', newState, { shouldValidate: true });
-      if (addressDetails.pincode) setValue('pincode', newPincode, { shouldValidate: true });
+    if (addressDetails.city) {
+      setValue('city', addressDetails.city, { shouldValidate: true });
+    }
+    if (addressDetails.state) {
+      setValue('state', addressDetails.state, { shouldValidate: true });
+    }
+    if (addressDetails.pincode) {
+      setValue('pincode', addressDetails.pincode, { shouldValidate: true });
     }
   }, [addressDetails]);
 
   const handleLocationSelect = async (lat: number, lng: number) => {
-    // 1. Update coordinates immediately for responsive UI
-    setFormData((prev) => ({
-      ...prev,
-      lat: lat.toString(),
-      lng: lng.toString(),
-    }));
-
-    // 2. Update form values for validation
+    // 1. Update form values for validation
     setValue('lat', lat.toString());
     setValue('lng', lng.toString());
 
-    // 3. Update internal location state
+    // 2. Update internal location state
     setLocation({ latitude: lat, longitude: lng });
 
-    // 4. Trigger reverse geocoding to auto-fill address details
+    // 3. Trigger reverse geocoding to auto-fill address details
     await reverseGeocode(lat, lng);
   };
 
@@ -177,11 +115,14 @@ export function AddressForm({
    */
   const onSubmit = (data: AddressFormValues) => {
     try {
-      // Merge formData with validated data (includes lat/lng from react-hook-form)
-      const payload: AddressFormData = {
-        ...data,
-        lat: formData.lat,
-        lng: formData.lng,
+      // Ensure lat/lng are always strings (not undefined) to match AddressFormData
+      const payload = {
+        address: data.address,
+        pincode: data.pincode,
+        city: data.city,
+        state: data.state,
+        lat: data.lat || '',
+        lng: data.lng || '',
       };
       onSave(payload);
     } catch (error) {
@@ -198,6 +139,7 @@ export function AddressForm({
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 80}
       >
         {/* Visual Header with handle indicator for bottom sheet feel */}
         <View style={styles.header}>
@@ -229,8 +171,8 @@ export function AddressForm({
             </View>
           ) : (
             <MapComponent
-              latitude={parseFloat(formData.lat) || 0}
-              longitude={parseFloat(formData.lng) || 0}
+              latitude={parseFloat(formValues.lat || '0')}
+              longitude={parseFloat(formValues.lng || '0')}
               onLocationSelect={handleLocationSelect}
             />
           )}
@@ -245,11 +187,8 @@ export function AddressForm({
             </View>
             <TextInput
               placeholder="e.g. Building, Street, Area details"
-              value={formData.address}
-              onChangeText={(text) => {
-                setFormData({ ...formData, address: text });
-                setValue('address', text);
-              }}
+              value={formValues.address || ''}
+              onChangeText={(text) => setValue('address', text)}
               multiline
               numberOfLines={4}
               style={[
@@ -266,27 +205,26 @@ export function AddressForm({
 
           <View style={styles.row}>
             <View style={styles.inputGroupLeft}>
-              <Text style={styles.label}>City</Text>
+              <Text style={styles.label}>City/Town</Text>
               {/* If reverse geocoding fails (empty city), allow manual entry */}
               {!address?.location?.name ? (
                 <TextInput
                   placeholder="Enter City"
-                  value={formData.city}
-                  onChangeText={(text) => {
-                    setFormData({ ...formData, city: text });
-                    setValue('city', text);
-                  }}
+                  value={formValues.city || ''}
+                  onChangeText={(text) => setValue('city', text)}
                   style={[styles.input, errors.city && styles.inputError]}
                   placeholderTextColor="#9CA3AF"
                 />
               ) : (
                 <View style={styles.readOnlyBox}>
                   <Text style={styles.readOnlyText} numberOfLines={1}>
-                    {formData.city || 'Select on Map'}
+                    {formValues.city || 'Select on Map'}
                   </Text>
                 </View>
               )}
-              {errors.city && <Text style={styles.errorText}>{errors.city.message}</Text>}
+              {errors.city && (
+                <Text style={styles.errorText}>{errors.city.message}</Text>
+              )}
             </View>
 
             <View style={styles.inputGroupRight}>
@@ -295,20 +233,32 @@ export function AddressForm({
               {!address?.location?.state ? (
                 <>
                   <TouchableOpacity
-                    style={[styles.input, styles.pickerButton, errors.state && styles.inputError]}
+                    style={[
+                      styles.input,
+                      styles.pickerButton,
+                      errors.state && styles.inputError,
+                    ]}
                     onPress={() => setShowStatePicker(true)}
                   >
-                    <Text style={!formData.state ? styles.pickerButtonPlaceholder : styles.pickerButtonText}>
-                      {formData.state || 'Select State'}
+                    <Text
+                      style={
+                        !formValues.state
+                          ? styles.pickerButtonPlaceholder
+                          : styles.pickerButtonText
+                      }
+                    >
+                      {formValues.state || 'Select State'}
                     </Text>
                     <Ionicons name="chevron-down" size={20} color="#6B7280" />
                   </TouchableOpacity>
-                  {errors.state && <Text style={styles.errorText}>{errors.state.message}</Text>}
+                  {errors.state && (
+                    <Text style={styles.errorText}>{errors.state.message}</Text>
+                  )}
                 </>
               ) : (
                 <View style={styles.readOnlyBox}>
                   <Text style={styles.readOnlyText} numberOfLines={1}>
-                    {formData.state || 'Select on Map'}
+                    {formValues.state || 'Select on Map'}
                   </Text>
                 </View>
               )}
@@ -323,10 +273,9 @@ export function AddressForm({
             </View>
             <TextInput
               placeholder="Enter 6-digit pincode"
-              value={formData.pincode}
+              value={formValues.pincode || ''}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, '');
-                setFormData({ ...formData, pincode: numericText });
                 setValue('pincode', numericText);
               }}
               keyboardType="numeric"
@@ -340,26 +289,11 @@ export function AddressForm({
           </View>
 
           {/* SUBMISSION ACTION */}
-          <TouchableOpacity
-            style={[styles.saveButton, isPending && styles.disabledButton]}
-            onPress={isPending ? () => { } : handleSubmit(onSubmit)}
-            activeOpacity={0.8}
-            accessibilityRole="button"
-          >
-            {isPending ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <>
-                <Text style={styles.saveButtonText}>Apply Changes</Text>
-                <Ionicons
-                  name="arrow-forward"
-                  size={18}
-                  color="white"
-                  style={styles.iconMargin}
-                />
-              </>
-            )}
-          </TouchableOpacity>
+          <GradientButton
+            title="Save Changes"
+            onPress={handleSubmit(onSubmit)}
+            loading={isPending}
+          />
 
           <View style={styles.bottomSpacer} />
         </ScrollView>
@@ -368,11 +302,8 @@ export function AddressForm({
       {/* State Selection Modal */}
       <StatePickerModal
         visible={showStatePicker}
-        selectedState={formData.state}
-        onSelectState={(state) => {
-          setFormData({ ...formData, state });
-          setValue('state', state);
-        }}
+        selectedState={formValues.state || ''}
+        onSelectState={(state) => setValue('state', state)}
         onClose={() => setShowStatePicker(false)}
       />
     </>

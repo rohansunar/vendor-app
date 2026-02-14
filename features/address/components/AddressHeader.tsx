@@ -30,7 +30,6 @@ export function AddressHeader() {
     if (!isLoading && (isError || !address)) {
       requestPermissionAndGetCurrentLocation().then(
         (location: { latitude: number; longitude: number } | null) => {
-          console.log('Location', location);
           if (mounted && location) {
             setIsModalVisible(true);
           }
@@ -47,18 +46,15 @@ export function AddressHeader() {
 
   const handleSave = (formData: AddressFormData) => {
     if (address?.id) {
-      updateMutation.mutate(
-        formData,
-        {
-          onSuccess: (res) => {
-            showSuccess(res?.data?.message || 'Address updated successfully');
-            setIsModalVisible(false);
-          },
-          onError: (error) => {
-            showError(getErrorMessage(error));
-          },
+      updateMutation.mutate(formData, {
+        onSuccess: (res) => {
+          showSuccess(res?.data?.message || 'Address updated successfully');
+          setIsModalVisible(false);
         },
-      );
+        onError: (error) => {
+          showError(getErrorMessage(error));
+        },
+      });
     } else {
       createMutation.mutate(formData, {
         onSuccess: (res) => {
@@ -132,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    maxWidth: '80%',
+    maxWidth: '100%',
   },
   textContainer: {
     marginLeft: 8,

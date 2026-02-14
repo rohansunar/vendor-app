@@ -32,7 +32,6 @@ export const addressService = {
    */
   async updateAddress(data: AddressFormData) {
     try {
-      console.log("UpdateData", data)
       return await apiClient.put(API_ENDPOINTS.ADDRESS, data);
     } catch (error) {
       throw error;

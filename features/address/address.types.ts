@@ -8,7 +8,7 @@ export type Address = {
     name: string; // City
     state: string;
     lat: number;
-    lng:number;
+    lng: number;
   };
   createdAt?: string;
 };

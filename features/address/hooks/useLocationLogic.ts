@@ -31,17 +31,17 @@ export const useLocationLogic = () => {
       if (status !== 'granted') {
         setErrorMSG('Permission to access location was denied');
         Alert.alert(
-          "Location Permission Required",
-          "Location is blocked. Please enable it from Settings to continue.",
+          'Location Permission Required',
+          'Location is blocked. Please enable it from Settings to continue.',
           [
             {
-              text: "Open Settings",
+              text: 'Open Settings',
               onPress: () => {
                 Linking.openSettings();
               },
             },
-            { text: "Cancel", style: "cancel" },
-          ]
+            { text: 'Cancel', style: 'cancel' },
+          ],
         );
         setLoading(false);
         return null;
@@ -71,14 +71,16 @@ export const useLocationLogic = () => {
       Alert.alert(
         'Location Unavailable',
         'Could not fetch your exact location. Please use the map to pin your address.',
-        [{
-              text: "Open Settings",
-              onPress: () => {
-                Linking.openSettings();
-              },
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              Linking.openSettings();
             },
-        { text: "Cancel", style: "cancel" }
-      ]);
+          },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+      );
 
       setLoading(false);
       return fallbackLocation;
@@ -99,7 +101,7 @@ export const useLocationLogic = () => {
           const newDetails: AddressDetails = {
             city: item.city || item.subregion || '',
             state: item.region || '',
-            pincode: item.postalCode || ''
+            pincode: item.postalCode || '',
           };
           setAddressDetails(newDetails);
         }

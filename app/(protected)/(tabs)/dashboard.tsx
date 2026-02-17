@@ -2,6 +2,7 @@ import { dashboardStyles } from '@/features/dashboard/components/dashboard.style
 import { SectionHeader } from '@/features/dashboard/components/SectionHeader';
 import { StatCard } from '@/features/dashboard/components/StatCard';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,29 +25,11 @@ export default function Dashboard() {
   }
   if (isError) {
     return (
-      <View
-        style={[
-          dashboardStyles.container,
-          { justifyContent: 'center', alignItems: 'center' },
-        ]}
-      >
-        <Text
-          style={{
-            color: '#DC2626',
-            fontSize: 16,
-            marginBottom: 12,
-          }}
-        >
-          {(error as Error).message}
-        </Text>
-
-        <Text
-          style={{ color: '#2563EB', fontWeight: '600' }}
-          onPress={() => refetch()}
-        >
-          Tap to retry
-        </Text>
-      </View>
+      <ErrorState
+        title="Dashboard Error"
+        message={(error as Error).message}
+        onRetry={() => refetch()}
+      />
     );
   }
 

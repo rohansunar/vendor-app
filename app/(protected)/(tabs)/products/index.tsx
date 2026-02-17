@@ -1,5 +1,6 @@
 import { ProductCard } from '@/features/product/components/ProductCard';
 import { useProducts } from '@/features/product/hooks/useProducts';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import {
@@ -13,7 +14,8 @@ import {
 } from 'react-native';
 
 export default function ProductsTab() {
-  const { data, isLoading, refetch, isFetching } = useProducts();
+  const { data, isLoading, refetch, isFetching, isError } = useProducts();
+  const error = useProducts().error;
 
   if (isLoading) {
     return (
@@ -21,6 +23,16 @@ export default function ProductsTab() {
         <ActivityIndicator size="large" color="#2563EB" />
         <Text style={styles.loadingText}>Fetching products...</Text>
       </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <ErrorState
+        title="Products Error"
+        message={(error as Error)?.message || 'Failed to load products.'}
+        onRetry={() => refetch()}
+      />
     );
   }
 

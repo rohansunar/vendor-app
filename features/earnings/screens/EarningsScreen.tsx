@@ -1,6 +1,7 @@
 
+import { ErrorState } from '@/shared/ui/ErrorState';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { EarningsFilter, FilterRange } from '../components/EarningsFilter';
 import { EarningsSummaryCard } from '../components/EarningsSummaryCard';
 import { TransactionBreakdown } from '../components/TransactionBreakdown';
@@ -84,7 +85,7 @@ export const EarningsScreen = () => {
     return (
         <ScrollView
             className="flex-1 bg-[#F8FAFC]"
-            contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+            contentContainerStyle={{ padding: 20, paddingBottom: 40, flexGrow: 1 }}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing}
@@ -94,32 +95,21 @@ export const EarningsScreen = () => {
                 />
             }
         >
-            <EarningsFilter
-                selectedRange={range}
-                startDate={startDate}
-                endDate={endDate}
-                onRangeChange={onRangeChange}
-            />
+            {!error && (
+                <EarningsFilter
+                    selectedRange={range}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onRangeChange={onRangeChange}
+                />
+            )}
 
             {error ? (
-                <View className="flex-1 justify-center items-center bg-[#F8FAFC] p-6 mt-10">
-                    <View className="bg-red-50 p-4 rounded-full mb-4">
-                        <View className="w-8 h-8 rounded-full bg-red-100 items-center justify-center">
-                            <Text className="text-red-500 font-bold">!</Text>
-                        </View>
-                    </View>
-                    <Text className="text-slate-800 text-lg font-semibold text-center mb-2">
-                        Oops! Something went wrong
-                    </Text>
-                    <Text className="text-slate-500 text-center mb-6 px-4">
-                        {error}
-                    </Text>
-                    <Text
-                        onPress={() => loadData()}
-                        className="text-white bg-blue-500 px-6 py-3 rounded-xl font-semibold overflow-hidden"
-                    >
-                        Try Again
-                    </Text>
+                <View style={{ flex: 1, height: 400 }}>
+                    <ErrorState
+                        onRetry={() => loadData()}
+                        footer="Please come back later if the issue persists"
+                    />
                 </View>
             ) : (
                 data && (

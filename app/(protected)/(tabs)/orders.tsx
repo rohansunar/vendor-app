@@ -6,6 +6,7 @@ import {
   useRiderAssignment,
 } from '@/features/orders/';
 import { OrderCard } from '@/features/orders/components/OrderCard';
+import { ErrorState } from '@/shared/ui/ErrorState';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -88,9 +89,11 @@ function OrdersScreenContent() {
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text>Error loading orders</Text>
-      </View>
+      <ErrorState
+        title="Orders Error"
+        message="We encountered an issue while loading your orders. Please try again."
+        onRetry={() => refetch()}
+      />
     );
   }
 

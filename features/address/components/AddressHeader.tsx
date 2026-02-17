@@ -24,10 +24,10 @@ export function AddressHeader() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { requestPermissionAndGetCurrentLocation } = useLocationLogic();
 
-  // Automatically ask for location if address fails or is empty
+  // Automatically ask for location ONLY if address is empty (and not loading/error)
   useEffect(() => {
     let mounted = true;
-    if (!isLoading && (isError || !address)) {
+    if (!isLoading && !isError && !address) {
       requestPermissionAndGetCurrentLocation().then(
         (location: { latitude: number; longitude: number } | null) => {
           if (mounted && location) {

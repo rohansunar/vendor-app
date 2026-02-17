@@ -19,6 +19,7 @@ export default function ProductsLayout() {
       <Stack.Screen
         name="index"
         options={{
+          title: 'Products',
           headerRight: () => (
             <TouchableOpacity
               onPress={() => router.push('/products/create')}

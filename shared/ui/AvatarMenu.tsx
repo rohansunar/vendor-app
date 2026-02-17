@@ -1,4 +1,5 @@
 import { removeToken } from '@/core/storage/secureStorage';
+import { useProfile } from '@/features/profile/hooks/useProfile';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -6,6 +7,17 @@ import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export function AvatarMenu() {
   const [open, setOpen] = useState(false);
+  const { data: profile } = useProfile();
+
+  const getInitials = (name?: string) => {
+    if (!name) return '';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 0) return '';
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
+  const initials = getInitials(profile?.name);
 
   // animation values
   const opacity = useRef(new Animated.Value(0)).current;
@@ -52,7 +64,11 @@ export function AvatarMenu() {
         {/* Avatar */}
         <Pressable onPress={() => setOpen((v) => !v)}>
           <View style={styles.avatar}>
-            <Feather name="user" size={18} color="#FFF" />
+            {initials ? (
+              <Text style={styles.initialsText}>{initials}</Text>
+            ) : (
+              <Feather name="user" size={18} color="#FFF" />
+            )}
           </View>
         </Pressable>
 
@@ -141,6 +157,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 16, // Added space on right side
+  },
+  initialsText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
   },
 
   dropdown: {

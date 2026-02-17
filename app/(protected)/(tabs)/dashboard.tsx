@@ -3,6 +3,7 @@ import { SectionHeader } from '@/features/dashboard/components/SectionHeader';
 import { StatCard } from '@/features/dashboard/components/StatCard';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { ErrorState } from '@/shared/ui/ErrorState';
+import { router } from 'expo-router';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -64,12 +65,16 @@ export default function Dashboard() {
             icon="shopping-bag"
             value={data.today.totalOrders}
             label="Total"
+            color="#2563EB"
+            onPress={() => router.push('/orders')}
           />
           <StatCard
             icon="clock"
             value={data.today.pending}
             label="Pending"
+            color="#D97706"
             isLast
+            onPress={() => router.push('/orders')}
           />
         </View>
       </View>
@@ -82,12 +87,16 @@ export default function Dashboard() {
             icon="dollar-sign"
             value={`₹${data.earnings.todaySales}`}
             label="Today"
+            color="#059669"
+            onPress={() => router.push('/earnings')}
           />
           <StatCard
             icon="bar-chart-2"
             value={`₹${data.earnings.monthlySales}`}
             label="This Month"
+            color="#7C3AED"
             isLast
+            onPress={() => router.push('/earnings')}
           />
         </View>
       </View>
@@ -100,34 +109,16 @@ export default function Dashboard() {
             icon="box"
             value={data.products.totalListedProducts}
             label="Listed"
+            color="#DB2777"
+            onPress={() => router.push('/products')}
           />
           <StatCard
             icon="check"
             value={data.products.approvedProducts}
             label="Approved"
+            color="#2563EB"
             isLast
-          />
-        </View>
-      </View>
-
-      {/* Payouts */}
-      <View style={dashboardStyles.section}>
-        <SectionHeader title="Payouts" />
-        <View style={dashboardStyles.cardRow}>
-          <StatCard
-            icon="calendar"
-            value={
-              data.payouts.nextPayoutDate
-                ? `₹${data.payouts.nextPayoutAmount}`
-                : '—'
-            }
-            label="Next Payout"
-          />
-          <StatCard
-            icon="info"
-            value={data.payouts.status}
-            label="Status"
-            isLast
+            onPress={() => router.push('/products')}
           />
         </View>
       </View>

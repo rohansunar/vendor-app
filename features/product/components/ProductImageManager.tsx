@@ -68,7 +68,18 @@ export function ProductImageManager({ productId, images }: Props) {
           onProgress: (p) => setUploadProgress(p),
         },
         {
-          onSettled: () => setUploadProgress(null),
+          onSuccess: () => {
+            setUploadProgress(100);
+            setTimeout(() => {
+              setUploadProgress(null);
+            }, 500);
+          },
+          onSettled: () => {
+            // Only clear progress if it hasn't been handled by onSuccess (error case)
+            if (uploadMutation.isError) {
+              setUploadProgress(null);
+            }
+          },
           onError: () =>
             Alert.alert(
               'Upload failed',

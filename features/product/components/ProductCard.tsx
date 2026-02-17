@@ -37,16 +37,25 @@ export function ProductCard({ product, onPress }: Props) {
 
       {/* Product Info */}
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.name} numberOfLines={1}>
-            {product.name}
-          </Text>
+        {/* Badges Row - Dedicated row at the top */}
+        <View style={styles.badgeRow}>
           {product.is_schedulable && (
             <View style={styles.schedulableBadge}>
-              <Feather name="calendar" size={10} color="#2563EB" />
+              <Text style={styles.schedulableText}>SUBSCRIPTION</Text>
             </View>
           )}
+          <View style={[
+            styles.statusBadge,
+            product.approval_status === 'APPROVED' ? styles.statusApproved : styles.statusPending
+          ]}>
+            <Text style={styles.statusText}>{product.approval_status}</Text>
+          </View>
         </View>
+
+        {/* Product Name - Full Width below badges */}
+        <Text style={styles.name} numberOfLines={2}>
+          {product.name}
+        </Text>
 
         <Text style={styles.description} numberOfLines={2}>
           {product.description || 'No description provided'}
@@ -97,8 +106,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
-    padding: 12,
+    padding: 16,
     marginBottom: 16,
+    minHeight: 140, // Increased for new layout
     shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -112,14 +122,51 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFF',
   },
   imageContainer: {
-    position: 'relative',
     borderRadius: 18,
     overflow: 'hidden',
     backgroundColor: '#F1F5F9',
+    alignSelf: 'flex-start',
+    marginTop: 4,
   },
   image: {
     width: 90,
     height: 90,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  statusApproved: {
+    backgroundColor: '#10B981',
+  },
+  statusPending: {
+    backgroundColor: '#F59E0B',
+  },
+  statusText: {
+    color: '#FFFFFF',
+    fontSize: 8,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  schedulableBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+  },
+  schedulableText: {
+    fontSize: 8,
+    fontWeight: '800',
+    color: '#2563EB',
   },
   inactiveOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -138,39 +185,24 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 16,
     justifyContent: 'space-between',
-    paddingVertical: 4,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   name: {
     fontSize: 16,
     fontWeight: '700',
     color: '#0F172A',
-    flex: 1,
-  },
-  schedulableBadge: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#EFF6FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 8,
+    marginBottom: 4,
   },
   description: {
     fontSize: 13,
     color: '#64748B',
     lineHeight: 18,
-    marginTop: 4,
+    marginBottom: 8,
   },
   footer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 8,
+    marginTop: 'auto',
   },
   priceContainer: {
     flexDirection: 'column',

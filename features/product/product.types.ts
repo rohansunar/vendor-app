@@ -8,4 +8,5 @@ export type Product = {
   is_schedulable: boolean;
   categoryId: string;
   images?: string[];
+  approval_status: 'APPROVED' | 'PENDING';
 };

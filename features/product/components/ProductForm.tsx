@@ -42,7 +42,6 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
   const [price, setPrice] = useState(product?.price?.toString() ?? '');
   const [deposit, setDeposit] = useState(product?.deposit?.toString() ?? '');
   const [categoryId, setCategoryId] = useState(product?.categoryId ?? '');
-  const [isActive, setIsActive] = useState(product?.is_active ?? true);
   const [isSchedulable, setIsSchedulable] = useState(
     product?.is_schedulable ?? false,
   );
@@ -55,7 +54,6 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
   useEffect(() => {
     if (product) {
       setCategoryId(product.categoryId);
-      setIsActive(product.is_active);
       setIsSchedulable(product.is_schedulable);
     }
   }, [product]);
@@ -79,7 +77,7 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
       description: description.trim(),
       price: Number(price),
       deposit: deposit ? Number(deposit) : undefined,
-      is_active: isActive,
+      is_active: true, // Always active by default when edited/created
       is_schedulable: isSchedulable,
       categoryId,
     });
@@ -195,24 +193,8 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferences</Text>
 
-        <View style={styles.switchRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.switchLabel}>Active Status</Text>
-            <Text style={styles.switchSubLabel}>Visible to customers</Text>
-          </View>
-          <Switch
-            value={isActive}
-            onValueChange={setIsActive}
-            trackColor={{ false: '#CBD5E1', true: '#BFDBFE' }}
-            thumbColor={isActive ? '#2563EB' : '#F8FAFF'}
-          />
-        </View>
-
         <View
-          style={[
-            styles.switchRow,
-            { borderTopWidth: 1, borderTopColor: '#F1F5F9', paddingTop: 16 },
-          ]}
+          style={styles.switchRow}
         >
           <View style={{ flex: 1 }}>
             <Text style={styles.switchLabel}>Schedulable</Text>

@@ -90,7 +90,7 @@ export function AddressHeader() {
           </Text>
           <Text style={styles.subLabel} numberOfLines={1}>
             {address
-              ? `${address.location.state}, ${address.pincode}`
+              ? `${address?.location?.state}, ${address.pincode}`
               : 'Set your location'}
           </Text>
         </View>

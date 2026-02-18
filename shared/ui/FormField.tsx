@@ -17,6 +17,7 @@ export function FormField({
         render={({ field: { onChange, value } }) => (
           <TextInput
             placeholder={placeholder}
+            placeholderTextColor="#94A3B8"
             value={value}
             onChangeText={onChange}
             keyboardType={keyboardType}
@@ -36,6 +37,9 @@ const styles = {
     borderColor: '#CBD5E1',
     borderRadius: 12,
     padding: 12,
+    fontSize: 14,
+    color: '#0F172A',
+    backgroundColor: '#FFFFFF',
   },
   errorText: {
     color: '#DC2626',

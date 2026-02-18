@@ -13,4 +13,5 @@ export const API_ENDPOINTS = {
   DASHBOARD: '/vendor/dashboard',
   RIDERS: '/riders',
   EARNINGS: '/vendor/ledger/transactions',
+  NOTIFICATION_REGISTER: '/tokens/register',
 };

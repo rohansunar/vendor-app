@@ -1,6 +1,6 @@
 import { useProfile, useUpdateProfile } from '@/features/profile';
-import { ProfileForm } from '@/features/profile/components/ProfileForm';
 import { profileStyles } from '@/features/profile/components/profile.styles';
+import { ProfileForm } from '@/features/profile/components/ProfileForm';
 import { Feather } from '@expo/vector-icons';
 import { router, useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
@@ -59,21 +59,14 @@ export default function ProfileScreen() {
       </View>
 
       {/* ---------- Form Card ---------- */}
+
+      {/* ---------- Form Card ---------- */}
       <ProfileForm
         data={data}
         loading={update.isPending}
         onSave={update.mutate}
       />
 
-      {/* ---------- Metadata ---------- */}
-      <View style={profileStyles.metaContainer}>
-        <Text style={profileStyles.metaText}>
-          Created: {new Date(data.created_at).toDateString()}
-        </Text>
-        <Text style={profileStyles.metaText}>
-          Updated: {new Date(data.updated_at).toDateString()}
-        </Text>
-      </View>
     </ScrollView>
   );
 }

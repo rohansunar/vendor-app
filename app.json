@@ -4,7 +4,8 @@
     "slug": "vendor-connect",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "vendorApp",
+    "scheme": "vendor-connect",
+    "icon": "./assets/images/splash-icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -21,8 +22,10 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "googleServicesFile": "./google-services.json",
       "permissions": [
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "NOTIFICATIONS"
       ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -33,12 +36,18 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-foreground.png",
+          "color": "#2563EB"
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": null,
-          "resizeMode": "contain",
+          "image": "./assets/images/splash-icon.png",
           "backgroundColor": "#FFFFFF",
           "dark": {
             "backgroundColor": "#FFFFFF"
@@ -51,6 +60,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c904b0f3-f3f8-4f8d-a9b7-f82748c8cd5c"
+      }
     }
   }
 }

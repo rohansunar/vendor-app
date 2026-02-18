@@ -57,17 +57,27 @@ export function AvatarMenu() {
     <>
       {/* Outside tap overlay */}
       {open && (
-        <Pressable style={StyleSheet.absoluteFill} onPress={closeMenu} />
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={closeMenu}
+          android_disableSound={true}
+        />
       )}
 
       <View style={{ position: 'relative' }}>
         {/* Avatar */}
-        <Pressable onPress={() => setOpen((v) => !v)}>
+        <Pressable
+          onPress={() => setOpen((v) => !v)}
+          style={({ pressed }) => [
+            styles.avatarContainer,
+            pressed && { opacity: 0.8 }
+          ]}
+        >
           <View style={styles.avatar}>
             {initials ? (
               <Text style={styles.initialsText}>{initials}</Text>
             ) : (
-              <Feather name="user" size={18} color="#FFF" />
+              <Feather name="user" size={18} color="#2563EB" />
             )}
           </View>
         </Pressable>
@@ -83,23 +93,38 @@ export function AvatarMenu() {
               },
             ]}
           >
-            <MenuItem
-              icon="user"
-              label="Profile"
-              onPress={() => navigate('/(protected)/(tabs)/profile')}
-            />
+            {/* Header info */}
+            <View style={styles.headerInfo}>
+              <Text style={styles.userName} numberOfLines={1}>
+                {profile?.name || 'User'}
+              </Text>
+              <Text style={styles.userRole} numberOfLines={1}>
+                {profile?.business_name || 'Vendor Partner'}
+              </Text>
+            </View>
 
-            <Divider />
+            <View style={styles.menuItems}>
+              <MenuItem
+                icon="user"
+                label="My Profile"
+                onPress={() => navigate('/(protected)/(tabs)/profile')}
+              />
 
-            <MenuItem
-              icon="credit-card"
-              label="Bank Account"
-              onPress={() => navigate('/(protected)/(tabs)/bank')}
-            />
+              <MenuItem
+                icon="credit-card"
+                label="Bank Account"
+                onPress={() => navigate('/(protected)/(tabs)/bank')}
+              />
 
-            <Divider />
-
-            <MenuItem icon="log-out" label="Logout" danger onPress={logout} />
+              <View style={styles.logoutSection}>
+                <MenuItem
+                  icon="log-out"
+                  label="Logout"
+                  danger
+                  onPress={logout}
+                />
+              </View>
+            </View>
           </Animated.View>
         )}
       </View>
@@ -125,74 +150,114 @@ function MenuItem({
       onPress={onPress}
       style={({ pressed }) => [
         styles.item,
-        pressed && { backgroundColor: '#F1F5F9' },
+        pressed && { backgroundColor: '#F8FAFC' },
       ]}
     >
-      <Feather name={icon} size={16} color={danger ? '#DC2626' : '#334155'} />
-      <Text style={[styles.itemText, danger && { color: '#DC2626' }]}>
+      <View style={[styles.iconWrapper, danger && { backgroundColor: '#FEF2F2' }]}>
+        <Feather name={icon} size={16} color={danger ? '#EF4444' : '#64748B'} />
+      </View>
+      <Text style={[styles.itemText, danger && { color: '#EF4444' }]}>
         {label}
       </Text>
+      {!danger && <Feather name="chevron-right" size={14} color="#CBD5E1" style={{ marginLeft: 'auto' }} />}
     </Pressable>
-  );
-}
-
-function Divider() {
-  return (
-    <View
-      style={{
-        height: 1,
-        backgroundColor: '#E2E8F0',
-      }}
-    />
   );
 }
 
 /* ---------- Styles ---------- */
 
 const styles = StyleSheet.create({
+  avatarContainer: {
+    marginRight: 16,
+    padding: 2,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+  },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#2563EB',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16, // Added space on right side
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   initialsText: {
-    color: '#FFFFFF',
-    fontSize: 14,
+    color: '#2563EB',
+    fontSize: 12,
     fontWeight: '700',
+    letterSpacing: -0.5,
   },
 
   dropdown: {
     position: 'absolute',
-    top: 44,
-    right: 0,
-    width: 180,
+    top: 50,
+    right: 12,
+    width: 220,
     backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 5,
+    borderRadius: 20,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 10,
     overflow: 'hidden',
     zIndex: 100,
+  },
+
+  headerInfo: {
+    padding: 16,
+    backgroundColor: '#F8FAFC',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 2,
+  },
+  userRole: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+
+  menuItems: {
+    padding: 8,
   },
 
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginVertical: 1,
   },
-
+  iconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
   itemText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#334155',
+  },
+
+  logoutSection: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
   },
 });

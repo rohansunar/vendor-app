@@ -132,7 +132,7 @@ function OrdersScreenContent() {
           )}
         </View>
 
-        {activeTab === 'ACTIVE' && (
+        {activeTab === 'ACTIVE' && filteredOrders.length > 0 && (
           <TouchableOpacity
             onPress={() => {
               if (isSelectionMode) {
@@ -229,9 +229,9 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 10,
   },
   tabButtonActive: {
     backgroundColor: '#2563EB',
@@ -253,14 +253,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingHorizontal: 20,
+    paddingTop: 16,
     paddingBottom: 8,
   },
   totalOrders: {
-    fontSize: 14,
-    color: '#64748B',
-    fontWeight: '500',
+    fontSize: 15,
+    color: '#475569',
+    fontWeight: '700',
   },
   selectedCount: {
     fontSize: 12,

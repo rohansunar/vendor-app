@@ -44,10 +44,14 @@ export function ProductCard({ product, onPress }: Props) {
               <Text style={styles.schedulableText}>SUBSCRIPTION</Text>
             </View>
           )}
-          <View style={[
-            styles.statusBadge,
-            product.approval_status === 'APPROVED' ? styles.statusApproved : styles.statusPending
-          ]}>
+          <View
+            style={[
+              styles.statusBadge,
+              product.approval_status === 'APPROVED'
+                ? styles.statusApproved
+                : styles.statusPending,
+            ]}
+          >
             <Text style={styles.statusText}>{product.approval_status}</Text>
           </View>
         </View>

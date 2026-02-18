@@ -24,7 +24,7 @@ import { addressStyles as styles } from './address.style';
 /**
  * AddressForm component for updating delivery address.
  * Adheres to requirements: restricted editing (only address and pincode),
- * 
+ *
  * Simplification: Uses only react-hook-form state management.
  * No redundant local state - useWatch() for rendering and getValues() for submission.
  */
@@ -67,7 +67,8 @@ export function AddressForm({
   // Initialize form with address data and get location if needed
   // Note: Intentional - only run when address prop changes, not on every render
   useEffect(() => {
-    const hasExistingCoordinates = address?.location?.lat && address?.location?.lng;
+    const hasExistingCoordinates =
+      address?.location?.lat && address?.location?.lng;
     const hasCoordinatesInForm = formValues.lat && formValues.lng;
 
     // Only fetch current location if we DON'T have valid coordinates

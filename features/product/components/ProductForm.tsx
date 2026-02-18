@@ -193,9 +193,7 @@ export function ProductForm({ product, onSubmit, isPending }: Props) {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferences</Text>
 
-        <View
-          style={styles.switchRow}
-        >
+        <View style={styles.switchRow}>
           <View style={{ flex: 1 }}>
             <Text style={styles.switchLabel}>Schedulable</Text>
             <Text style={styles.switchSubLabel}>Subscription enabled</Text>

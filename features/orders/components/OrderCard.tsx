@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
@@ -128,12 +129,17 @@ export function OrderCard({ order }: { order: Order }) {
           <View
             style={[styles.checkbox, isSelected && styles.checkboxSelected]}
           >
-            {isSelected && <View style={styles.checkboxInner} />}
+            {isSelected && <Feather name="check" size={14} color="#FFF" />}
           </View>
         )}
 
         {/* Header */}
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            isSelectionMode && !isHistorical && styles.headerWithSelection,
+          ]}
+        >
           <View>
             <Text style={styles.orderNo}>#{order.orderNo}</Text>
           </View>
@@ -214,34 +220,42 @@ export function OrderCard({ order }: { order: Order }) {
           {!isSelectionMode && (
             <View style={styles.actionRow}>
               {order.delivery_status === 'PENDING' && (
-                <>
+                <View style={styles.ctaGroup}>
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.rejectButton]}
+                    style={[styles.ctaButton, styles.rejectCta]}
                     onPress={() => setRejectionModalVisible(true)}
                   >
-                    <Text style={styles.rejectButtonText}>Reject</Text>
+                    <Feather name="x-circle" size={16} color="#EF4444" />
+                    <Text style={styles.rejectCtaText}>Reject</Text>
                   </TouchableOpacity>
+
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.assignButton]}
+                    style={[styles.ctaButton, styles.assignCta]}
                     onPress={() => setRiderModalVisible(true)}
                   >
-                    <Text style={styles.assignButtonText}>Assign Rider</Text>
+                    <Feather name="user-plus" size={16} color="#FFFFFF" />
+                    <Text style={styles.assignCtaText}>Assign Rider</Text>
                   </TouchableOpacity>
+
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.selfDeliveryButton]}
+                    style={[styles.ctaButton, styles.selfDeliveryCta]}
                     onPress={handleSelfDelivery}
                   >
-                    <Text style={styles.selfDeliveryText}>Self Delivery</Text>
+                    <Feather name="truck" size={16} color="#16A34A" />
+                    <Text style={styles.selfDeliveryCtaText}>
+                      Self Delivery
+                    </Text>
                   </TouchableOpacity>
-                </>
+                </View>
               )}
 
               {order.delivery_status === 'OUT_FOR_DELIVERY' && (
                 <TouchableOpacity
-                  style={[styles.actionButton, styles.confirmButton]}
+                  style={[styles.ctaButton, styles.confirmCta]}
                   onPress={() => setDeliveryModalVisible(true)}
                 >
-                  <Text style={styles.confirmButtonText}>Confirm Delivery</Text>
+                  <Feather name="check-circle" size={18} color="#FFFFFF" />
+                  <Text style={styles.confirmCtaText}>Confirm Delivery</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -329,8 +343,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  headerWithSelection: {
+    paddingLeft: 36, // Create space for checkbox to avoid overlap
   },
   headerRight: {
     alignItems: 'flex-end',
@@ -421,52 +438,70 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   actionRow: {
+    flex: 1,
+    marginTop: 8,
+  },
+  ctaGroup: {
     flexDirection: 'row',
-    gap: 10,
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'flex-end',
+  },
+  ctaButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 14,
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  actionButton: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 12,
-  },
-  rejectButton: {
+  rejectCta: {
     backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FEE2E2',
   },
-  rejectButtonText: {
+  rejectCtaText: {
     color: '#EF4444',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
-  assignButton: {
-    backgroundColor: '#EEF2FF',
-  },
-  assignButtonText: {
-    color: '#4F46E5',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  selfDeliveryButton: {
-    backgroundColor: '#F0FDF4',
-  },
-  selfDeliveryText: {
-    color: '#16A34A',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  confirmButton: {
+  assignCta: {
     backgroundColor: '#2563EB',
-    paddingHorizontal: 16,
     shadowColor: '#2563EB',
-    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
   },
-  confirmButtonText: {
+  assignCtaText: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '700',
+  },
+  selfDeliveryCta: {
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#DCFCE7',
+  },
+  selfDeliveryCtaText: {
+    color: '#16A34A',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  confirmCta: {
+    backgroundColor: '#059669',
+    width: '100%',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    shadowColor: '#059669',
+    shadowOpacity: 0.3,
+  },
+  confirmCtaText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,

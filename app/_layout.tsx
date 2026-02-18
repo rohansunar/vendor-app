@@ -1,9 +1,10 @@
 import { AppProvider } from '@/core/providers/AppProvider';
 import { useAuth } from '@/core/providers/AuthProvider';
 import { toastConfig } from '@/core/ui/toastConfig';
+import { AnimatedSplashScreen } from '@/shared/ui/AnimatedSplashScreen';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
@@ -13,20 +14,18 @@ SplashScreen.preventAutoHideAsync();
 
 function RootNavigator() {
   const { loading } = useAuth();
+  const [isAnimationFinished, setIsAnimationFinished] = useState(false);
 
-  useEffect(() => {
-    if (!loading) {
-      // Auth check finished → hide splash
-      SplashScreen.hideAsync();
-    }
-  }, [loading]);
-
-  // Do not render navigation until auth is ready
-  if (loading) {
-    return null;
+  // We show the animated splash until BOTH auth loading is finished AND the animation itself is finished
+  if (loading || !isAnimationFinished) {
+    return (
+      <AnimatedSplashScreen
+        onAnimationFinish={() => setIsAnimationFinished(true)}
+      />
+    );
   }
 
-  return <Stack screenOptions={{ headerShown: false }}></Stack>;
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
 
 export default function RootLayout() {

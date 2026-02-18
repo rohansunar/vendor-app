@@ -39,10 +39,17 @@ export function StatCard({
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={[dashboardStyles.iconContainer, { backgroundColor: getBgColor(color) }]}>
+      <View
+        style={[
+          dashboardStyles.iconContainer,
+          { backgroundColor: getBgColor(color) },
+        ]}
+      >
         <Feather name={icon} size={22} color={color} />
       </View>
-      <Text style={dashboardStyles.cardValue} numberOfLines={1}>{value}</Text>
+      <Text style={dashboardStyles.cardValue} numberOfLines={1}>
+        {value}
+      </Text>
       <Text style={dashboardStyles.cardLabel}>{label}</Text>
     </TouchableOpacity>
   );

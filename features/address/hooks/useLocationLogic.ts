@@ -57,7 +57,8 @@ export const useLocationLogic = () => {
 
       const { latitude, longitude } = currentLocation.coords;
       setLocation({ latitude, longitude });
-      await reverseGeocode(latitude, longitude);
+      console.log("latitude", latitude, "longitude", longitude)
+      // await reverseGeocode(latitude, longitude);
 
       return { latitude, longitude };
     } catch (error) {
@@ -70,7 +71,7 @@ export const useLocationLogic = () => {
 
       Alert.alert(
         'Location Unavailable',
-        'Could not fetch your exact location. Please use the map to pin your address.',
+        'Could not fetch your exact location. Please enter your address manually.',
         [
           {
             text: 'Open Settings',
@@ -89,6 +90,7 @@ export const useLocationLogic = () => {
 
   const reverseGeocode = useCallback(
     async (latitude: number, longitude: number) => {
+      /*
       setLoading(true);
       try {
         const result = await Location.reverseGeocodeAsync({
@@ -111,6 +113,7 @@ export const useLocationLogic = () => {
       } finally {
         setLoading(false);
       }
+      */
     },
     [],
   );

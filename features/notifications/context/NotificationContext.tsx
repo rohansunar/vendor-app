@@ -1,6 +1,6 @@
 import { useAuth } from '@/core/providers/AuthProvider';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { notificationService } from '../services/NotificationService';
+import { notificationService } from '../services/Notification.service';
 import { NotificationContextType, NotificationState } from '../types/notification.types';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -14,24 +14,30 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         permissionStatus: null,
     });
 
-    const register = async () => {
+    const register = React.useCallback(async () => {
         try {
             const token = await notificationService.registerForPushNotificationsAsync();
-            setState(prev => ({ ...prev, token, error: null }));
+            setState(prev => {
+                if (prev.token === token) return prev;
+                return { ...prev, token, error: null };
+            });
         } catch (error: any) {
             setState(prev => ({ ...prev, error: error.message || 'Failed to register' }));
         }
-    };
+    }, []);
 
-    const clearNotification = () => {
-        setState(prev => ({ ...prev, notification: null }));
-    };
+    const clearNotification = React.useCallback(() => {
+        setState(prev => {
+            if (prev.notification === null) return prev;
+            return { ...prev, notification: null };
+        });
+    }, []);
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            register();
-        }
-    }, [isAuthenticated]);
+    const contextValue = React.useMemo(() => ({
+        ...state,
+        register,
+        clearNotification
+    }), [state, register, clearNotification]);
 
     useEffect(() => {
         const notificationListener = notificationService.addNotificationListener(notification => {
@@ -50,7 +56,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }, []);
 
     return (
-        <NotificationContext.Provider value={{ ...state, register, clearNotification }}>
+        <NotificationContext.Provider value={contextValue}>
             {children}
         </NotificationContext.Provider>
     );

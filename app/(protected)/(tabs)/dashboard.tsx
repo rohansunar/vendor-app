@@ -2,15 +2,22 @@ import { dashboardStyles } from '@/features/dashboard/components/dashboard.style
 import { SectionHeader } from '@/features/dashboard/components/SectionHeader';
 import { StatCard } from '@/features/dashboard/components/StatCard';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
+import { useNotifications } from '@/features/notifications/context/NotificationContext';
 import { ErrorState } from '@/shared/ui/ErrorState';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Dashboard() {
   const insets = useSafeAreaInsets();
+  const { register } = useNotifications();
   const { data, isLoading, isError, error, isRefetching, refetch } =
     useDashboard();
+
+  useEffect(() => {
+    register();
+  }, [register]);
 
   if (isLoading) {
     return (
@@ -84,7 +91,7 @@ export default function Dashboard() {
         <SectionHeader title="Earnings" />
         <View style={dashboardStyles.cardRow}>
           <StatCard
-            icon="dollar-sign"
+            icon="trending-up"
             value={`₹${data.earnings.todaySales}`}
             label="Today"
             color="#059669"

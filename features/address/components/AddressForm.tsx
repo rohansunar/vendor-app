@@ -4,20 +4,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { AddressFormValues, addressSchema } from '../address.schema';
 import { AddressFormProps } from '../address.types';
 import { useLocationLogic } from '../hooks/useLocationLogic';
 import { AddressStatus } from './AddressStatus';
-import { MapComponent } from './MapComponent';
 import { StatePickerModal } from './StatePickerModal';
 import { addressStyles as styles } from './address.style';
 
@@ -137,10 +133,8 @@ export function AddressForm({
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <View
         style={styles.keyboardView}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 80}
       >
         {/* Visual Header with handle indicator for bottom sheet feel */}
         <View style={styles.header}>
@@ -161,8 +155,10 @@ export function AddressForm({
           style={styles.container}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          {/* MAP COMPONENT */}
+          {/* MAP COMPONENT - Commented out as per requirement to not render maps for now */}
+          {/* 
           {locationLoading ? (
             <View style={styles.mapPlaceholderCentered}>
               <ActivityIndicator size="large" color="#2563EB" />
@@ -177,6 +173,7 @@ export function AddressForm({
               onLocationSelect={handleLocationSelect}
             />
           )}
+          */}
           {/* READ-ONLY: System Identifiers and Status */}
           <AddressStatus address={address} />
 
@@ -298,7 +295,7 @@ export function AddressForm({
 
           <View style={styles.bottomSpacer} />
         </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
 
       {/* State Selection Modal */}
       <StatePickerModal

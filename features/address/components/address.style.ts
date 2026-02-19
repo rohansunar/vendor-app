@@ -7,6 +7,7 @@ import { Platform, StyleSheet } from 'react-native';
 export const addressStyles = StyleSheet.create({
   keyboardView: {
     width: '100%',
+    backgroundColor: '#FFFFFF',
   },
   header: {
     paddingTop: 12,

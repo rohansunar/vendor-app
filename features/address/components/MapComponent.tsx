@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView from 'react-native-maps';
 
 interface MapComponentProps {
   latitude: number;
@@ -23,6 +23,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
   return (
     <View style={styles.container}>
+      {/* 
       <MapView
         ref={mapRef}
         provider={PROVIDER_DEFAULT}
@@ -58,7 +59,10 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       <View style={styles.centerMarker}>
         <Ionicons name="location" size={40} color="#EF4444" />
       </View>
-      {/* Overlay hint or controls could go here if needed */}
+      */}
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Ionicons name="map-outline" size={48} color="#9CA3AF" />
+      </View>
     </View>
   );
 };

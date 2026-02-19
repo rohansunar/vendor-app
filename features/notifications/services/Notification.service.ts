@@ -1,10 +1,8 @@
 import { apiClient } from '@/core/api/client';
 import { API_ENDPOINTS } from '@/core/api/endpoints';
-import { ENV } from '@/core/config/env';
-import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import { DeviceType, RegisterTokenPayload } from '../types/notification.types';
 
 /**
@@ -51,17 +49,19 @@ class NotificationService {
             }
 
             if (finalStatus !== 'granted') {
-                throw new Error('Push notification permission not granted');
+                Alert.alert(
+                    'Permissions Required',
+                    'Notifications are disabled. You may miss important Orders updates and remiders.',
+                    [
+                        { text: 'Cancel', style: 'cancel' },
+                        { text: 'Open Settings', onPress: () => Linking.openSettings() }
+                    ]
+                );
+                return null;
             }
 
-            const projectId =
-                Constants?.expoConfig?.extra?.eas?.projectId ??
-                Constants?.easConfig?.projectId ?? ENV.PROJECT_ID;
-            const tokenData = await Notifications.getExpoPushTokenAsync({
-                projectId,
-            });
+            const tokenData = await Notifications.getDevicePushTokenAsync();
             const token = tokenData.data;
-
             await this.registerTokenWithBackend(token);
 
             return token;
@@ -85,8 +85,8 @@ class NotificationService {
         try {
             await apiClient.post(API_ENDPOINTS.NOTIFICATION_REGISTER, payload);
         } catch (error) {
-            console.error('Failed to register token with backend:', error);
-            throw error;
+            // Silently fail for token registration as per requirements
+            console.log('Failed to register token with backend (silent fail):', error);
         }
     }
 

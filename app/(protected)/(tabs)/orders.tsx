@@ -1,3 +1,4 @@
+import { useNotifications } from '@/features/notifications/context/NotificationContext';
 import {
   OrdersSelectionProvider,
   RiderSelectionModal,
@@ -7,7 +8,7 @@ import {
 } from '@/features/orders/';
 import { OrderCard } from '@/features/orders/components/OrderCard';
 import { ErrorState } from '@/shared/ui/ErrorState';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -48,8 +49,13 @@ function OrdersScreenContent() {
     useOrdersSelection();
   const { assignRiders, isAssigning: isBulkAssigning } = useRiderAssignment();
   const insets = useSafeAreaInsets();
+  const { register } = useNotifications();
   const [riderModalVisible, setRiderModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'HISTORY'>('ACTIVE');
+
+  useEffect(() => {
+    register();
+  }, [register]);
 
   // Client-side filtering as the endpoint doesn't support filtering yet
   const filteredOrders = React.useMemo(() => {

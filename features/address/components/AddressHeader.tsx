@@ -11,7 +11,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,19 +29,18 @@ export function AddressHeader() {
   // Automatically ask for location ONLY if address is empty (and not loading/error)
   useEffect(() => {
     let mounted = true;
-    if (!isLoading && !isError && !address) {
-      requestPermissionAndGetCurrentLocation().then(
-        (location: { latitude: number; longitude: number } | null) => {
-          if (mounted && location) {
-            setIsModalVisible(true);
-          }
-        },
-      );
+    if (!isLoading && !address) {
+      requestPermissionAndGetCurrentLocation().finally(() => {
+        if (mounted) {
+          setIsModalVisible(true);
+        }
+      });
     }
+
     return () => {
       mounted = false;
     };
-  }, [isLoading, isError, address, requestPermissionAndGetCurrentLocation]);
+  }, [isLoading, address, requestPermissionAndGetCurrentLocation]);
 
   const createMutation = useCreateAddress();
   const updateMutation = useUpdateAddress();
@@ -109,14 +110,17 @@ export function AddressHeader() {
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.modalContent}
+          >
             <AddressForm
               address={address || undefined}
               onSave={handleSave}
               onCancel={() => setIsModalVisible(false)}
               isPending={createMutation.isPending || updateMutation.isPending}
             />
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </Modal>
     </>

@@ -1,6 +1,8 @@
 import { useProfile, useUpdateProfile } from '@/features/profile';
 import { profileStyles } from '@/features/profile/components/profile.styles';
 import { ProfileForm } from '@/features/profile/components/ProfileForm';
+import { AddRiderForm } from '@/features/riders/components/AddRiderForm';
+import { useRiders } from '@/features/riders/hooks/useRiders';
 import { Feather } from '@expo/vector-icons';
 import { router, useNavigation } from 'expo-router';
 import { useLayoutEffect } from 'react';
@@ -22,10 +24,11 @@ export default function ProfileScreen() {
     });
   }, [navigation]);
 
-  const { data, isLoading, isError } = useProfile();
+  const { data, isLoading: isProfileLoading, isError } = useProfile();
   const update = useUpdateProfile();
+  const { addRider, isAdding } = useRiders();
 
-  if (isLoading) {
+  if (isProfileLoading) {
     return (
       <View style={profileStyles.centered}>
         <Text>Loading profile…</Text>
@@ -59,13 +62,21 @@ export default function ProfileScreen() {
       </View>
 
       {/* ---------- Form Card ---------- */}
-
-      {/* ---------- Form Card ---------- */}
       <ProfileForm
         data={data}
         loading={update.isPending}
         onSave={update.mutate}
       />
+
+      {/* ---------- Rider Management ---------- */}
+      <View style={{ marginTop: 20 }}>
+        <AddRiderForm
+          onSubmit={async (data) => {
+            await addRider(data);
+          }}
+          isLoading={isAdding}
+        />
+      </View>
 
     </ScrollView>
   );

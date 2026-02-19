@@ -12,6 +12,9 @@ import {
 
 import { useRiderAssignment } from '../hooks/useRiderAssignment';
 
+import { AddRiderForm } from '@/features/riders/components/AddRiderForm';
+import { useRiders } from '@/features/riders/hooks/useRiders';
+
 interface Rider {
   id: string;
   name: string;
@@ -30,6 +33,7 @@ export function RiderSelectionModal({
   onSelect,
 }: RiderSelectionModalProps) {
   const { riders, isLoadingRiders, ridersError } = useRiderAssignment();
+  const { addRider, isAdding } = useRiders();
 
   const getDisplayName = (rider: Rider) => {
     if (rider.name && rider.name.trim() !== '') return rider.name;
@@ -53,6 +57,13 @@ export function RiderSelectionModal({
                   <Text style={styles.closeText}>Close</Text>
                 </TouchableOpacity>
               </View>
+
+              <AddRiderForm
+                onSubmit={async (data) => {
+                  await addRider(data);
+                }}
+                isLoading={isAdding}
+              />
 
               {isLoadingRiders ? (
                 <ActivityIndicator

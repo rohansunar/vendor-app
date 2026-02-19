@@ -66,7 +66,7 @@ class NotificationService {
 
             return token;
         } catch (error) {
-            console.error('Error registering for push notifications:', error);
+            console.warn('Error registering for push notifications:', error);
             throw error;
         }
     }
@@ -86,7 +86,7 @@ class NotificationService {
             await apiClient.post(API_ENDPOINTS.NOTIFICATION_REGISTER, payload);
         } catch (error) {
             // Silently fail for token registration as per requirements
-            console.log('Failed to register token with backend (silent fail):', error);
+            console.warn('Failed to register token with backend (silent fail):', error);
         }
     }
 

@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 import { productService } from '../services/product.service';
 
 export function useRestoreProduct() {
@@ -11,9 +12,12 @@ export function useRestoreProduct() {
       // 🔥 Refresh product list
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: (error) => {
-      console.log('❌ Product Restore Failed');
-      console.log(error);
+    onError: (error: any) => {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to restore product',
+        text2: error.message || 'Please try again later',
+      });
     },
   });
 }

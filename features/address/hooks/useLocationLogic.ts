@@ -57,7 +57,6 @@ export const useLocationLogic = () => {
 
       const { latitude, longitude } = currentLocation.coords;
       setLocation({ latitude, longitude });
-      console.log("latitude", latitude, "longitude", longitude)
       // await reverseGeocode(latitude, longitude);
 
       return { latitude, longitude };

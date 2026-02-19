@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { AddressFormValues, addressSchema } from '../address.schema';
 import { AddressFormProps } from '../address.types';
 import { useLocationLogic } from '../hooks/useLocationLogic';
@@ -122,12 +123,12 @@ export function AddressForm({
         lng: data.lng || '',
       };
       onSave(payload);
-    } catch (error) {
-      // Structured logging as per requirements
-      console.error(
-        `[AddressForm] Submission error at ${new Date().toISOString()}:`,
-        error,
-      );
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Form submission failed',
+        text2: error.message || 'Please check your input',
+      });
     }
   };
 

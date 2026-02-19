@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 import { addressService } from '../services/address.service';
 
 export function useCreateAddress() {
@@ -12,8 +13,12 @@ export function useCreateAddress() {
         queryKey: ['address'],
       });
     },
-    onError: (error) => {
-      console.log('❌ Address creation failed');
+    onError: (error: any) => {
+      Toast.show({
+        type: 'error',
+        text1: 'Address creation failed',
+        text2: error.message || 'Please try again later',
+      });
     },
   });
 }
